@@ -1,119 +1,119 @@
 # Decisions — פלטינה
 
-> ADR (Architecture Decision Records) — למה בחרנו X ולא Y.
-> מתועד אוטומטית על ידי Claude Code בכל פעם שמתקבלת החלטה משמעותית.
+> ADR (Architecture Decision Records) — why we chose X over Y.
+> Auto-tracked by Claude Code whenever a significant decision is made.
 
 ---
 
-## ADR-001: Next.js 14+ במקום React + Express נפרד
+## ADR-001: Next.js 14+ instead of separate React + Express
 
-**תאריך:** אפריל 2026
-**סטטוס:** ✅ אושר
+**Date:** April 2026
+**Status:** ✅ Approved
 
-**החלטה:** Next.js App Router כ-fullstack framework.
+**Decision:** Next.js App Router as a fullstack framework.
 
-**סיבות:**
+**Reasons:**
 
-- API routes + UI באותו repo — פחות overhead
-- SaaS-ready מהיום הראשון
-- Vercel deployment פשוט
+- API routes + UI in the same repo — less overhead
+- SaaS-ready from day one
+- Simple Vercel deployment
 - TypeScript end-to-end
 
 ---
 
-## ADR-002: Prisma 6 במקום Prisma 7
+## ADR-002: Prisma 6 instead of Prisma 7
 
-**תאריך:** מאי 2026
-**סטטוס:** ✅ אושר
+**Date:** May 2026
+**Status:** ✅ Approved
 
-**החלטה:** Downgrade מ-Prisma 7 ל-Prisma 6.
+**Decision:** Downgrade from Prisma 7 to Prisma 6.
 
-**סיבות:**
+**Reasons:**
 
-- Prisma 7 עדיין early access — `url` ב-schema לא נתמך
-- `prisma.config.ts` דורש tsx ויש בעיות parsing עם ESM
-- Prisma 6 יציב, עובד עם `url` ב-schema כרגיל
-- ניתן לשדרג בעתיד כש-Prisma 7 יתייצב
+- Prisma 7 is still early access — `url` in schema is not supported
+- `prisma.config.ts` requires tsx and has parsing issues with ESM
+- Prisma 6 is stable, works with `url` in schema as usual
+- Can upgrade later once Prisma 7 stabilizes
 
-**חלופות שנבדקו:** Drizzle ORM — נדחה כי Prisma מוכר יותר וה-DX טוב יותר לשלב MVP.
-
----
-
-## ADR-003: Supabase במקום Railway / Neon / Local
-
-**תאריך:** מאי 2026
-**סטטוס:** ✅ אושר
-
-**החלטה:** Supabase כ-managed PostgreSQL.
-
-**סיבות:**
-
-- Free tier נדיב (500MB, 2 projects)
-- PostgreSQL מלא — לא וריאנט
-- Dashboard נוח לצפייה בנתונים בשלב MVP
-- Session Pooler תומך IPv4 בחינם
-
-**הערה:** יש להשתמש ב-Session Pooler URL (לא Direct) עקב IPv4.
+**Alternatives considered:** Drizzle ORM — rejected because Prisma is more familiar and has better DX for the MVP stage.
 
 ---
 
-## ADR-004: Find-or-create ללקוח ורכב
+## ADR-003: Supabase instead of Railway / Neon / Local
 
-**תאריך:** מאי 2026
-**סטטוס:** ✅ אושר
+**Date:** May 2026
+**Status:** ✅ Approved
 
-**החלטה:** בעת יצירת Work Order — לקוח מזוהה לפי phone, רכב לפי licensePlate. אם לא קיים — נוצר אוטומטית.
+**Decision:** Supabase as managed PostgreSQL.
 
-**סיבות:**
+**Reasons:**
 
-- UX פשוט יותר — טופס אחד לכל
-- מוסך קטן לא רוצה "קודם צור לקוח, אחר כך צור רכב, אחר כך פתח כרטיס"
-- Phone כ-unique identifier — מספיק לשלב MVP
+- Generous free tier (500MB, 2 projects)
+- Full PostgreSQL — not a variant
+- Convenient dashboard for viewing data during MVP stage
+- Session Pooler supports IPv4 for free
+
+**Note:** Must use Session Pooler URL (not Direct) due to IPv4.
 
 ---
 
-## ADR-005: Vitest במקום Jest
+## ADR-004: Find-or-create for customer and vehicle
 
-**תאריך:** מאי 2026
-**סטטוס:** ✅ אושר
+**Date:** May 2026
+**Status:** ✅ Approved
 
-**החלטה:** Vitest כ-test runner.
+**Decision:** When creating a Work Order — customer is identified by phone, vehicle by licensePlate. If not found — created automatically.
 
-**סיבות:**
+**Reasons:**
 
-- מהיר יותר (ESM-native, HMR על tests)
-- config מינימלי — עובד out-of-the-box עם Vite + TypeScript
-- API זהה ל-Jest — אין learning curve
-- מתחזק באותו ecosystem כמו Next.js + Vite
+- Simpler UX — one form for everything
+- A small garage doesn't want "first create customer, then create vehicle, then open a work order"
+- Phone as unique identifier — sufficient for MVP stage
 
-**חלופות שנבדקו:** Jest — נדחה בגלל config מורכב עם ESM + TypeScript ב-Next.js 14+.
+---
+
+## ADR-005: Vitest instead of Jest
+
+**Date:** May 2026
+**Status:** ✅ Approved
+
+**Decision:** Vitest as test runner.
+
+**Reasons:**
+
+- Faster (ESM-native, HMR on tests)
+- Minimal config — works out-of-the-box with Vite + TypeScript
+- Same API as Jest — no learning curve
+- Maintained in the same ecosystem as Next.js + Vite
+
+**Alternatives considered:** Jest — rejected due to complex config with ESM + TypeScript in Next.js 14+.
 
 ---
 
 ## ADR-006: ESLint Zero-Warnings Policy
 
-**תאריך:** מאי 2026
-**סטטוס:** ✅ אושר
+**Date:** May 2026
+**Status:** ✅ Approved
 
-**החלטה:** `eslint --max-warnings 0` — כל warning מנוצ'ה CI.
+**Decision:** `eslint --max-warnings 0` — any warning fails CI.
 
-**סיבות:**
+**Reasons:**
 
-- warnings שמצטברים הופכים ל-noise שמסתיר bugs אמיתיים
-- אכיפה ב-CI מבטיחה שהחוק עקבי ולא "בזמן אחריות"
-- `eslint-config-prettier` מונע קונפליקטים בין ESLint ל-Prettier
+- Accumulated warnings become noise that hides real bugs
+- CI enforcement ensures the rule is consistent and not just aspirational
+- `eslint-config-prettier` prevents conflicts between ESLint and Prettier
 
 ---
 
-## ADR-007: Validators בקובץ נפרד
+## ADR-007: Validators in a separate file
 
-**תאריך:** מאי 2026
-**סטטוס:** ✅ אושר
+**Date:** May 2026
+**Status:** ✅ Approved
 
-**החלטה:** Zod schemas הועברו מ-route files ל-`lib/validators/work-orders.ts`.
+**Decision:** Zod schemas moved from route files to `lib/validators/work-orders.ts`.
 
-**סיבות:**
+**Reasons:**
 
-- שיתוף schema בין route files שונים ללא duplication
-- ניתן לבדוק את ה-schemas בנפרד מה-HTTP logic (unit tests ב-`__tests__/schemas.test.ts`)
-- מיישר עם convention של `lib/` כמקום לשיתוף logic
+- Shared schema across multiple route files without duplication
+- Schemas can be tested independently from HTTP logic (unit tests in `__tests__/schemas.test.ts`)
+- Aligns with the `lib/` convention as a place for shared logic

@@ -1,27 +1,27 @@
 # Architecture — פלטינה
 
-> מסמך זה מתועד ומעודכן אוטומטית על ידי Claude Code.
+> This document is tracked and auto-updated by Claude Code.
 
 ---
 
 ## Stack
 
-| Layer       | Technology     | Version | סיבה                                      |
-| ----------- | -------------- | ------- | ----------------------------------------- |
-| Framework   | Next.js        | 16.2.6  | Fullstack, App Router, SaaS-ready         |
-| Runtime     | React          | 19.2.4  | —                                         |
-| Language    | TypeScript     | 5       | Type safety, DX                           |
-| Database    | PostgreSQL     | —       | Relational, מתאים לנתוני רכב/לקוחות       |
-| ORM         | Prisma         | 6.19.3  | Type-safe, migrations, DX                 |
-| Validation  | Zod            | 4.4.3   | Type inference, עובד טוב עם Next.js       |
-| Styling     | Tailwind CSS   | 4       | Utility-first, מהיר לאב                   |
-| Linting     | ESLint         | 9       | Zero-warnings policy                      |
-| Formatting  | Prettier       | 3       | אחידות קוד                                |
-| Testing     | Vitest         | 4       | jsdom + @testing-library/react            |
-| CI/CD       | GitHub Actions | —       | type-check + lint + format + test + build |
-| Hosting DB  | Supabase       | —       | Free tier, PostgreSQL, zero-ops           |
-| Hosting App | Vercel         | —       | (עתידי)                                   |
-| Auth        | NextAuth.js    | —       | (עתידי)                                   |
+| Layer       | Technology     | Version | Reason                                         |
+| ----------- | -------------- | ------- | ---------------------------------------------- |
+| Framework   | Next.js        | 16.2.6  | Fullstack, App Router, SaaS-ready              |
+| Runtime     | React          | 19.2.4  | —                                              |
+| Language    | TypeScript     | 5       | Type safety, DX                                |
+| Database    | PostgreSQL     | —       | Relational, suitable for vehicle/customer data |
+| ORM         | Prisma         | 6.19.3  | Type-safe, migrations, DX                      |
+| Validation  | Zod            | 4.4.3   | Type inference, works well with Next.js        |
+| Styling     | Tailwind CSS   | 4       | Utility-first, fast for prototyping            |
+| Linting     | ESLint         | 9       | Zero-warnings policy                           |
+| Formatting  | Prettier       | 3       | Code consistency                               |
+| Testing     | Vitest         | 4       | jsdom + @testing-library/react                 |
+| CI/CD       | GitHub Actions | —       | type-check + lint + format + test + build      |
+| Hosting DB  | Supabase       | —       | Free tier, PostgreSQL, zero-ops                |
+| Hosting App | Vercel         | —       | (future)                                       |
+| Auth        | NextAuth.js    | —       | (future)                                       |
 
 ---
 
@@ -29,39 +29,39 @@
 
 ### customers
 
-| עמודה     | סוג      | הערות             |
-| --------- | -------- | ----------------- |
-| id        | cuid     | PK                |
-| name      | String   | שם מלא            |
-| phone     | String   | מזהה ייחודי בפועל |
-| email     | String?  | אופציונלי         |
-| createdAt | DateTime | auto              |
-| updatedAt | DateTime | auto              |
+| Column    | Type     | Notes                      |
+| --------- | -------- | -------------------------- |
+| id        | cuid     | PK                         |
+| name      | String   | Full name                  |
+| phone     | String   | De-facto unique identifier |
+| email     | String?  | Optional                   |
+| createdAt | DateTime | auto                       |
+| updatedAt | DateTime | auto                       |
 
 ### vehicles
 
-| עמודה        | סוג     | הערות     |
-| ------------ | ------- | --------- |
-| id           | cuid    | PK        |
-| licensePlate | String  | unique    |
-| make         | String  | יצרן      |
-| model        | String  | דגם       |
-| year         | Int     | שנת ייצור |
-| color        | String? | אופציונלי |
-| mileage      | Int?    | אופציונלי |
+| Column       | Type    | Notes              |
+| ------------ | ------- | ------------------ |
+| id           | cuid    | PK                 |
+| licensePlate | String  | unique             |
+| make         | String  | Manufacturer       |
+| model        | String  | Model              |
+| year         | Int     | Manufacturing year |
+| color        | String? | Optional           |
+| mileage      | Int?    | Optional           |
 
 ### work_orders
 
-| עמודה         | סוג       | הערות                                     |
+| Column        | Type      | Notes                                     |
 | ------------- | --------- | ----------------------------------------- |
 | id            | cuid      | PK                                        |
-| orderNumber   | Int       | auto-increment, מוצג למשתמש               |
+| orderNumber   | Int       | auto-increment, displayed to user         |
 | status        | Enum      | PENDING / IN_PROGRESS / READY / DELIVERED |
-| description   | String    | תיאור התקלה                               |
-| notes         | String?   | הערות פנימיות                             |
-| estimatedCost | Decimal?  | הערכה                                     |
-| finalCost     | Decimal?  | סופי                                      |
-| completedAt   | DateTime? | מוגדר כשסטטוס → DELIVERED                 |
+| description   | String    | Fault description                         |
+| notes         | String?   | Internal notes                            |
+| estimatedCost | Decimal?  | Estimate                                  |
+| finalCost     | Decimal?  | Final                                     |
+| completedAt   | DateTime? | Set when status → DELIVERED               |
 | customerId    | FK        | → customers                               |
 | vehicleId     | FK        | → vehicles                                |
 
@@ -81,9 +81,9 @@
 
 ### Patterns
 
-- **Find-or-create** ללקוח לפי phone, לרכב לפי licensePlate
-- **Zod validation** על כל input
-- **Status transitions** חד-כיווניים: PENDING → IN_PROGRESS → READY → DELIVERED
+- **Find-or-create** for customer by phone, for vehicle by licensePlate
+- **Zod validation** on all inputs
+- **Status transitions** one-directional: PENDING → IN_PROGRESS → READY → DELIVERED
 
 ---
 
@@ -143,4 +143,4 @@ Config: `vitest.config.ts` (jsdom environment, `@` alias to root), `vitest.setup
 
 ## Decisions Log
 
-ראה `docs/decisions.md`
+See `docs/decisions.md`

@@ -1,47 +1,47 @@
 # Feature: Work Orders (כרטיסי עבודה)
 
-> סטטוס: ✅ MVP בנוי | ✅ UI ראשוני בנוי | 🔄 שיפורים ב-UI ממתינים
+> Status: ✅ MVP built | ✅ Initial UI built | 🔄 UI improvements pending
 
 ---
 
-## תיאור
+## Description
 
-הפיצ'ר המרכזי של פלטינה MVP. כרטיס עבודה מחבר לקוח + רכב + עבודה שבוצעה + עלות.
+The core feature of the Platina MVP. A work order links a customer + vehicle + work performed + cost.
 
 ---
 
-## מה בנוי
+## What's Built
 
 ### Backend ✅
 
-- `GET /api/work-orders` — רשימה עם סינון (`?status=`) וחיפוש (`?search=`)
-- `POST /api/work-orders` — יצירת כרטיס חדש (find-or-create ללקוח/רכב)
-- `GET /api/work-orders/:id` — כרטיס בודד
-- `PATCH /api/work-orders/:id` — עדכון סטטוס / עלות סופית / הערות
+- `GET /api/work-orders` — list with filtering (`?status=`) and search (`?search=`)
+- `POST /api/work-orders` — create new order (find-or-create for customer/vehicle)
+- `GET /api/work-orders/:id` — single order
+- `PATCH /api/work-orders/:id` — update status / final cost / notes
 
 ### DB ✅
 
-- טבלאות `customers`, `vehicles`, `work_orders` קיימות ב-Supabase
+- Tables `customers`, `vehicles`, `work_orders` exist in Supabase
 - Migration: `20260508222050_init`
 
 ### UI ✅
 
-- `app/(dashboard)/page.tsx` — דאשבורד Next.js אמיתי עם client-side fetching, חיפוש, סינון לפי סטטוס, ו-refresh אחרי יצירת כרטיס
-- `components/WorkOrderCard.tsx` — כרטיס הצגת work order עם כפתור מעבר סטטוס
-- `components/NewOrderModal.tsx` — מודל יצירת כרטיס חדש עם טופס מלא
-- `components/StatusBadge.tsx` — badge עם צבע לפי סטטוס
+- `app/(dashboard)/page.tsx` — real Next.js dashboard with client-side fetching, search, status filtering, and refresh after creating an order
+- `components/WorkOrderCard.tsx` — work order display card with status transition button
+- `components/NewOrderModal.tsx` — new order creation modal with full form
+- `components/StatusBadge.tsx` — badge with color by status
 
 ### Validators ✅
 
 - `lib/validators/work-orders.ts` — Zod schemas: `CreateWorkOrderSchema`, `UpdateWorkOrderSchema`
-- license plate מועלה אוטומטית ל-uppercase
-- שנת רכב: 1980 עד השנה הנוכחית+1
+- License plate auto-uppercased
+- Vehicle year: 1980 to current year+1
 
 ### Tests ✅
 
-- `__tests__/schemas.test.ts` — 14 unit tests לכל הvalidation cases
-- `__tests__/StatusBadge.test.tsx` — render tests לכל 4 הסטטוסים
-- `__tests__/WorkOrderCard.test.tsx` — render tests ל-component
+- `__tests__/schemas.test.ts` — 14 unit tests for all validation cases
+- `__tests__/StatusBadge.test.tsx` — render tests for all 4 statuses
+- `__tests__/WorkOrderCard.test.tsx` — render tests for the component
 
 ---
 
@@ -54,22 +54,22 @@ PENDING (ממתין)
             → DELIVERED (נמסר)
 ```
 
-Transitions חד-כיווניים בלבד.
+One-directional transitions only.
 
 ---
 
-## מה חסר
+## What's Missing
 
-- [ ] דפי Next.js אמיתיים (לא prototype)
-- [ ] דף פרטי כרטיס עבודה (`/work-orders/:id`)
-- [ ] עריכת כרטיס קיים
-- [ ] הדפסת כרטיס עבודה
-- [ ] חיפוש לפי תאריך
+- [ ] Real Next.js pages (not prototype)
+- [ ] Work order detail page (`/work-orders/:id`)
+- [ ] Edit existing order
+- [ ] Print work order
+- [ ] Search by date
 
 ---
 
-## לא בסקופ (MVP)
+## Out of Scope (MVP)
 
-- תשלומים / חשבוניות
-- תזכורת WhatsApp ללקוח
-- היסטוריית שינויים לכרטיס
+- Payments / invoices
+- WhatsApp reminder to customer
+- Change history for an order
