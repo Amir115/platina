@@ -1,46 +1,46 @@
 # Bugs & Known Issues — פלטינה
 
-> מתועד אוטומטית על ידי Claude Code.
-> פורמט: [תאריך] | [סטטוס] | תיאור | פתרון
+> Auto-tracked by Claude Code.
+> Format: [date] | [status] | description | resolution
 
 ---
 
-## פתורים
+## Resolved
 
-### BUG-001: Prisma 7 לא מצליח לפרסר prisma.config.ts
+### BUG-001: Prisma 7 fails to parse prisma.config.ts
 
-**תאריך:** מאי 2026 | **סטטוס:** ✅ נפתר
+**Date:** May 2026 | **Status:** ✅ Resolved
 
-**תיאור:** Prisma 7 הוציא שינוי breaking — `url` ב-datasource לא נתמך יותר. `prisma.config.ts` נדרש, אבל יש בעיות parsing עם ESM + TypeScript.
+**Description:** Prisma 7 introduced a breaking change — `url` in the datasource block is no longer supported. `prisma.config.ts` is required, but there are parsing issues with ESM + TypeScript.
 
-**פתרון:** Downgrade ל-Prisma 6 שתומך ב-`url` ב-schema כרגיל.
-
----
-
-### BUG-002: Supabase Direct Connection נכשלת (IPv4)
-
-**תאריך:** מאי 2026 | **סטטוס:** ✅ נפתר
-
-**תיאור:** `P1001: Can't reach database server` עם Direct Connection URL.
-
-**סיבה:** Supabase Direct Connection היא IPv6-only בחינם. רשת ה-Mac היא IPv4.
-
-**פתרון:** שימוש ב-Session Pooler URL (`*.pooler.supabase.com:5432`) במקום Direct (`db.*.supabase.co:5432`).
+**Resolution:** Downgrade to Prisma 6, which supports `url` in the schema as usual.
 
 ---
 
-### BUG-003: Prisma לא קורא מ-.env.local
+### BUG-002: Supabase Direct Connection fails (IPv4)
 
-**תאריך:** מאי 2026 | **סטטוס:** ✅ נפתר
+**Date:** May 2026 | **Status:** ✅ Resolved
 
-**תיאור:** `Environment variable not found: DATABASE_URL` למרות ש-`.env.local` מוגדר.
+**Description:** `P1001: Can't reach database server` with Direct Connection URL.
 
-**סיבה:** Prisma CLI קורא רק מ-`.env`, לא מ-`.env.local` (זה Next.js convention).
+**Cause:** Supabase Direct Connection is IPv6-only on the free tier. Mac network is IPv4.
 
-**פתרון:** `cp .env.local .env` — לשמור את שני הקבצים מסונכרנים.
+**Resolution:** Use Session Pooler URL (`*.pooler.supabase.com:5432`) instead of Direct (`db.*.supabase.co:5432`).
 
 ---
 
-## פתוחים
+### BUG-003: Prisma does not read from .env.local
 
-_אין כרגע_
+**Date:** May 2026 | **Status:** ✅ Resolved
+
+**Description:** `Environment variable not found: DATABASE_URL` despite `.env.local` being configured.
+
+**Cause:** Prisma CLI only reads from `.env`, not `.env.local` (which is a Next.js convention).
+
+**Resolution:** `cp .env.local .env` — keep both files in sync.
+
+---
+
+## Open
+
+_None currently_

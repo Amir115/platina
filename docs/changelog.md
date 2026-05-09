@@ -1,67 +1,67 @@
 # Changelog — פלטינה
 
-> מתועד אוטומטית על ידי Claude Code בסוף כל סשן עבודה.
-> פורמט: [תאריך] | [סשן] | מה נעשה | צעד הבא
+> Auto-tracked by Claude Code at the end of every work session.
+> Format: [date] | [session] | what was done | next step
 
 ---
 
-## סשן 001 — תכנון ואפיון ראשוני
+## Session 001 — Initial Planning and Scoping
 
-**תאריך:** אפריל 2026
-**סוג:** Planning
+**Date:** April 2026
+**Type:** Planning
 
-### מה נעשה
+### What was done
 
-- הוגדר חזון המוצר ופוזישנינג
-- מופו מתחרים: נשר, מוסכית 2020, מנוע, תפנית
-- זוהו 5 פערי שוק מרכזיים
-- הוגדרה אסטרטגיית כניסה בשלבים (קטנים → רשתות → יבואנים)
-- נוצר מסמך מחקר מלא (`RESEARCH.md`)
+- Defined product vision and positioning
+- Mapped competitors: Nesher, Mosechit 2020, Mano'a, Tifnit
+- Identified 5 key market gaps
+- Defined phased go-to-market strategy (small shops → chains → importers)
+- Created full research document (`RESEARCH.md`)
 
-### קבצים שנוצרו
+### Files created
 
 - `RESEARCH.md`
 - `CONTEXT.md`
 
-### צעד הבא
+### Next step
 
-- ריאיון עם אבא (לקוח בטא ראשון)
-- ריאיונות עם 5+ בעלי מוסכים
+- Interview with dad (first beta customer)
+- Interviews with 5+ garage owners
 
 ---
 
-## סשן 002 — הקמת תשתית + MVP ראשון
+## Session 002 — Infrastructure Setup + First MVP
 
-**תאריך:** מאי 2026
-**סוג:** Infrastructure + Feature
+**Date:** May 2026
+**Type:** Infrastructure + Feature
 
-### מה נעשה
+### What was done
 
-#### תשתית
+#### Infrastructure
 
-- הוקם פרויקט Next.js 16 + TypeScript + Tailwind
-- הוגדר PostgreSQL על Supabase (EU Central - Frankfurt)
-- הותקן Prisma 6 וחובר ל-DB
-- הורצה migration ראשונה בהצלחה (`20260508222050_init`)
-- נוצרו טבלאות: `customers`, `vehicles`, `work_orders`
+- Set up Next.js 16 + TypeScript + Tailwind project
+- Configured PostgreSQL on Supabase (EU Central - Frankfurt)
+- Installed Prisma 6 and connected to DB
+- Ran first migration successfully (`20260508222050_init`)
+- Created tables: `customers`, `vehicles`, `work_orders`
 
-#### פיצ'ר: כרטיס עבודה (Work Order) — MVP
+#### Feature: Work Order (כרטיסי עבודה) — MVP
 
-- הוגדרה סכמת DB מלאה (Customer, Vehicle, WorkOrder)
-- נבנו API routes:
-  - `GET /api/work-orders` — רשימה עם סינון וחיפוש
-  - `POST /api/work-orders` — יצירה (find-or-create ללקוח/רכב)
-  - `GET /api/work-orders/:id` — כרטיס בודד
-  - `PATCH /api/work-orders/:id` — עדכון סטטוס/עלות
-- נבנה UI prototype: דאשבורד, סטטיסטיקות, סינון, חיפוש, טופס יצירה
-- הוגדרו status transitions: PENDING → IN_PROGRESS → READY → DELIVERED
+- Defined full DB schema (Customer, Vehicle, WorkOrder)
+- Built API routes:
+  - `GET /api/work-orders` — list with filtering and search
+  - `POST /api/work-orders` — create (find-or-create for customer/vehicle)
+  - `GET /api/work-orders/:id` — single order
+  - `PATCH /api/work-orders/:id` — update status/cost
+- Built UI prototype: dashboard, statistics, filtering, search, create form
+- Defined status transitions: PENDING → IN_PROGRESS → READY → DELIVERED
 
-#### תיעוד
+#### Documentation
 
-- נוצרו: `CLAUDE.md`, `CONTEXT.md`, `RESEARCH.md`
-- נוצרו: `types/index.ts`, `lib/prisma.ts`, `.env.example`, `.gitignore`
+- Created: `CLAUDE.md`, `CONTEXT.md`, `RESEARCH.md`
+- Created: `types/index.ts`, `lib/prisma.ts`, `.env.example`, `.gitignore`
 
-### קבצים שנוצרו / שונו
+### Files created / modified
 
 - `prisma/schema.prisma`
 - `lib/prisma.ts`
@@ -74,126 +74,126 @@
 - `.env.example`
 - `.gitignore`
 
-### בעיות שנפתרו
+### Bugs resolved
 
-- Prisma 7 לא תומך ב-`url` ב-schema → downgrade ל-Prisma 6
-- Supabase IPv4 — נפתר עם Session Pooler במקום Direct Connection
+- Prisma 7 does not support `url` in schema → downgraded to Prisma 6
+- Supabase IPv4 — resolved with Session Pooler instead of Direct Connection
 
-### צעד הבא
+### Next step
 
-- הגדרת Monday.com + MCP ל-Claude Code
-- הגדרת Prettier + ESLint + GitHub Actions CI
-- כתיבת Claude Code skills לפרויקט
-- בניית UI אמיתי (Next.js pages + components)
+- Configure Monday.com + MCP for Claude Code
+- Configure Prettier + ESLint + GitHub Actions CI
+- Write Claude Code skills for the project
+- Build real UI (Next.js pages + components)
 - Playwright + Storybook tests
 
 ---
 
-## סשן 003 — תשתית CI/CD + Code Quality
+## Session 003 — CI/CD Infrastructure + Code Quality
 
-**תאריך:** מאי 2026
-**סוג:** Infrastructure
+**Date:** May 2026
+**Type:** Infrastructure
 **PR:** #2 (`infra: add Prettier, ESLint hardening, and GitHub Actions CI`)
 
-### מה נעשה
+### What was done
 
-- הותקן ESLint 9 עם `eslint-config-next` + `eslint-config-prettier` — zero warnings policy (`--max-warnings 0`)
-- הותקן Prettier 3 — פורמט אחיד לכל הפרויקט
-- הוקם GitHub Actions CI (`.github/workflows/ci.yml`) עם שלבים: type-check → lint → format:check → test → build
-- הוקם Label Check workflow (`.github/workflows/label-check.yml`) — כל PR חייב label מ: Bug / Documentation / Enhancement / Infrastructure
-- נוספו npm scripts: `lint`, `format`, `format:check`, `type-check`
+- Installed ESLint 9 with `eslint-config-next` + `eslint-config-prettier` — zero warnings policy (`--max-warnings 0`)
+- Installed Prettier 3 — consistent formatting across the project
+- Set up GitHub Actions CI (`.github/workflows/ci.yml`) with steps: type-check → lint → format:check → test → build
+- Set up Label Check workflow (`.github/workflows/label-check.yml`) — every PR must have a label from: Bug / Documentation / Enhancement / Infrastructure
+- Added npm scripts: `lint`, `format`, `format:check`, `type-check`
 
-### קבצים שנוצרו / שונו
+### Files created / modified
 
 - `.github/workflows/ci.yml`
 - `.github/workflows/label-check.yml`
 - `package.json` (scripts + devDependencies)
 
-### צעד הבא
+### Next step
 
-- הוספת Vitest + unit tests
-- שיפור כיסוי בדיקות
+- Add Vitest + unit tests
+- Improve test coverage
 
 ---
 
-## סשן 004 — Vitest + Unit Tests
+## Session 004 — Vitest + Unit Tests
 
-**תאריך:** מאי 2026
-**סוג:** Infrastructure
+**Date:** May 2026
+**Type:** Infrastructure
 **PR:** #3 (`infra: add Vitest unit tests and CI test step`)
 
-### מה נעשה
+### What was done
 
-- הותקן Vitest 4 עם jsdom + @testing-library/react
-- הוצאו ה-Zod schemas מ-routes לקובץ ייעודי: `lib/validators/work-orders.ts`
-- נכתבו 3 קבצי טסטים:
-  - `__tests__/schemas.test.ts` — 14 טסטים ל-`CreateWorkOrderSchema` ו-`UpdateWorkOrderSchema`
-  - `__tests__/StatusBadge.test.tsx` — טסטי render ל-component
-  - `__tests__/WorkOrderCard.test.tsx` — טסטי render ל-component
-- נוסף `vitest.config.ts` ו-`vitest.setup.ts`
-- נוסף שלב `npm test` ל-CI workflow
+- Installed Vitest 4 with jsdom + @testing-library/react
+- Extracted Zod schemas from routes to a dedicated file: `lib/validators/work-orders.ts`
+- Wrote 3 test files:
+  - `__tests__/schemas.test.ts` — 14 tests for `CreateWorkOrderSchema` and `UpdateWorkOrderSchema`
+  - `__tests__/StatusBadge.test.tsx` — render tests for the component
+  - `__tests__/WorkOrderCard.test.tsx` — render tests for the component
+- Added `vitest.config.ts` and `vitest.setup.ts`
+- Added `npm test` step to the CI workflow
 
-### קבצים שנוצרו / שונו
+### Files created / modified
 
-- `lib/validators/work-orders.ts` (חדש — הוצא מ-route)
+- `lib/validators/work-orders.ts` (new — extracted from route)
 - `__tests__/schemas.test.ts`
 - `__tests__/StatusBadge.test.tsx`
 - `__tests__/WorkOrderCard.test.tsx`
 - `vitest.config.ts`
 - `vitest.setup.ts`
-- `.github/workflows/ci.yml` (נוסף שלב test)
+- `.github/workflows/ci.yml` (added test step)
 - `package.json`
 
-### צעד הבא
+### Next step
 
-- הגדרת Claude Code skills
-- שיפור UI
+- Configure Claude Code skills
+- Improve UI
 
 ---
 
-## סשן 005 — מסמך מחקר שוק
+## Session 005 — Market Research Document
 
-**תאריך:** מאי 2026
-**סוג:** Documentation
+**Date:** May 2026
+**Type:** Documentation
 **PR:** #4 (`docs: add product research document`)
 
-### מה נעשה
+### What was done
 
-- `RESEARCH.md` הועלה רשמית ל-git (נוצר בסשן 001 מחוץ ל-git)
+- `RESEARCH.md` officially committed to git (created in Session 001 outside git)
 
-### קבצים שנוצרו / שונו
+### Files created / modified
 
-- `RESEARCH.md` (committed לראשונה)
+- `RESEARCH.md` (first commit)
 
-### צעד הבא
+### Next step
 
-- כתיבת Claude Code /ship skill
-- הגדרת shared settings
+- Write Claude Code /ship skill
+- Configure shared settings
 
 ---
 
-## סשן 006 — Claude Code Tooling: /ship Skill
+## Session 006 — Claude Code Tooling: /ship Skill
 
-**תאריך:** מאי 2026
-**סוג:** Infrastructure
-**ענף:** `infra/ship-skill` (טרם מוזג)
+**Date:** May 2026
+**Type:** Infrastructure
+**Branch:** `infra/ship-skill` (not yet merged)
 
-### מה נעשה
+### What was done
 
-- נוצר `/ship` skill (`.claude/commands/ship.md`) — skill ל-Claude Code שמייצר PR נקי מעל main
+- Created `/ship` skill (`.claude/commands/ship.md`) — Claude Code skill that creates a clean PR on top of main
   - Pre-flight: tsc + eslint + format:check + vitest
-  - מנתח diff → קובע label + branch name + commit message
-  - Rebase על main + push + `gh pr create` אוטומטי
-- נוצר `.claude/settings.json` — הרשאות מאושרות מראש: npm scripts + `gh label list`
-- תוקן פורמט `ship.md` ונוסף `format:check` לשלב ה-pre-flight
+  - Analyzes diff → determines label + branch name + commit message
+  - Rebase on main + push + automatic `gh pr create`
+- Created `.claude/settings.json` — pre-approved permissions: npm scripts + `gh label list`
+- Fixed `ship.md` format and added `format:check` to the pre-flight step
 
-### קבצים שנוצרו / שונו
+### Files created / modified
 
 - `.claude/commands/ship.md`
 - `.claude/settings.json`
-- `CLAUDE.md` (עדכון)
+- `CLAUDE.md` (updated)
 
-### צעד הבא
+### Next step
 
-- מיזוג `infra/ship-skill` ל-main
-- בניית feature בפועל (כרטיסי עבודה — שיפור UI)
+- Merge `infra/ship-skill` to main
+- Build actual feature (work orders — UI improvement)
