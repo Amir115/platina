@@ -7,5 +7,6 @@
       "Bash(npm test *)",
       "Bash(gh label list *)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": ["monday"]
 }
