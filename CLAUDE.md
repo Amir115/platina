@@ -206,6 +206,20 @@ gh pr merge <number> --squash --delete-branch
 
 ---
 
+## Task Management
+
+This project uses **Monday.com** for task tracking (board ID: `5096146634`).
+
+**At the start of every session:**
+
+1. Use the `monday` MCP tool to fetch open tasks from board `5096146634`
+2. Use item status and descriptions to understand what is in progress or planned next
+3. Prioritize work based on items marked as active/in-progress
+
+The Monday.com MCP server is configured in `.mcp.json` and enabled via `.claude/settings.json`.
+
+---
+
 ## Post-Merge Cleanup
 
 After any PR is merged during a session, always without being asked:
