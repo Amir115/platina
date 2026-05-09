@@ -193,3 +193,24 @@ docs/
 - Let the developer update these files manually
 - Leave `docs/changelog.md` without a "Next step" entry
 - Open a separate PR just for `docs/` updates — knowledge base changes must ship in the same PR as the code that triggered them. If docs are out of date, update them in the next feature/fix PR, not a standalone one
+
+---
+
+## Merge Strategy
+
+Always use **squash and merge** when merging PRs — never regular merge or rebase merge.
+
+```bash
+gh pr merge <number> --squash --delete-branch
+```
+
+---
+
+## Post-Merge Cleanup
+
+After any PR is merged during a session, always without being asked:
+
+1. `git checkout main`
+2. `git pull origin main`
+
+This keeps the local `main` branch current so the next `/ship` rebase starts from the correct base.
