@@ -147,3 +147,48 @@ const STATUS_LABELS = {
   DELIVERED: 'נמסר',
 };
 ```
+
+---
+
+## Knowledge Base Management
+
+The `docs/` folder is the project's living knowledge base. Claude Code is responsible for keeping it up to date — the developer never edits these files manually.
+
+### Structure
+
+```
+docs/
+├── changelog.md          # Session history — updated every session
+├── architecture.md       # Stack, DB schema, API structure
+├── decisions.md          # ADR — why we chose X over Y
+├── bugs.md               # Known bugs and resolutions
+└── features/
+    ├── work-orders.md    # One file per feature
+    └── ...
+```
+
+### Rules
+
+**At the start of every session:**
+
+1. Read `docs/changelog.md` to understand where we left off
+2. Read relevant `docs/features/*.md` for the feature being worked on
+3. Check `docs/bugs.md` for known issues
+
+**At the end of every session:**
+
+1. Update `docs/changelog.md` with a new entry:
+   - What was built / changed
+   - Files created or modified
+   - Bugs fixed
+   - Next step
+2. Update the relevant `docs/features/*.md` — mark completed items, add new ones
+3. If a new architectural decision was made → add to `docs/decisions.md`
+4. If a bug was found or fixed → update `docs/bugs.md`
+5. If a new feature was started → create `docs/features/<feature-name>.md`
+
+**Never:**
+
+- Skip the end-of-session update
+- Let the developer update these files manually
+- Leave `docs/changelog.md` without a "Next step" entry
