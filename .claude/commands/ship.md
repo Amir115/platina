@@ -12,15 +12,16 @@ If the user passed `--draft`, create the PR as a draft. Otherwise create it read
 
 ## Step 1 — Pre-flight CI checks
 
-Run all three checks. If any fail, stop immediately and show the exact error output. Do not touch git.
+Run all four checks. If any fail, stop immediately and show the exact error output. Do not touch git.
 
 ```bash
 npx tsc --noEmit
 npx eslint . --max-warnings 0
+npm run format:check
 npx vitest run
 ```
 
-Report which checks passed and which failed. Only continue to Step 2 if all three pass.
+Report which checks passed and which failed. Only continue to Step 2 if all four pass.
 
 ---
 
@@ -35,6 +36,7 @@ git stash list
 ```
 
 Record:
+
 - **current_branch**: the branch name from `git branch --show-current`
 - **on_main**: true if current_branch is `main` or `master`
 - **has_uncommitted**: true if `git status` shows any changed or untracked files
@@ -84,6 +86,7 @@ Record:
 ## Step 4 — Analyze the diff to determine metadata
 
 Run:
+
 ```bash
 git diff HEAD
 git diff --cached
@@ -97,6 +100,7 @@ Also check the full list of changed file paths. Use this analysis to determine a
 Available labels: `Bug`, `Documentation`, `Enhancement`, `Infrastructure`
 
 Mapping rules (apply the first match):
+
 - Any file ending in `.md`, or files under `docs/`, or filenames containing `RESEARCH` or `CHANGELOG` → **Documentation**
 - Any of: `package.json`, `package-lock.json`, `tsconfig*.json`, `.github/`, `*.config.ts`, `*.config.js`, `vitest.config.*`, `eslint.config.*`, `prettier*`, `.env*`, `prisma/schema.prisma` → **Infrastructure**
 - The change fixes broken or incorrect existing behavior (no new files, description implies a fix) → **Bug**
@@ -113,11 +117,13 @@ Format: `<type>/<short-slug>`
 ### 4c — Commit message
 
 Follow conventional commits format:
+
 ```
 <type>(<scope>): <short imperative summary>
 
 <optional body — only if the why is non-obvious>
 ```
+
 - `type`: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`
 - `scope`: optional, the main module or area affected (e.g. `work-orders`, `api`, `ci`)
 - Summary: max 72 chars, imperative mood, no period
@@ -127,13 +133,16 @@ Follow conventional commits format:
 Title: same as the first line of the commit message (the `type(scope): summary` line), max 70 chars.
 
 Body template:
+
 ```markdown
 ## Summary
+
 - <bullet 1>
 - <bullet 2>
 - <bullet 3 if needed>
 
 ## Test plan
+
 - [ ] <thing to verify manually or via CI>
 - [ ] <another thing>
 
@@ -152,6 +161,7 @@ git reset HEAD -- .env .env.local .env.*.local *.pem *.key
 ```
 
 Then commit:
+
 ```bash
 git commit -m "<commit message from 4c>"
 ```
@@ -161,11 +171,13 @@ git commit -m "<commit message from 4c>"
 ## Step 6 — Push and create (or update) the PR
 
 Push the branch:
+
 ```bash
 git push -u origin <branch_name>
 ```
 
 Check if a PR already exists for this branch:
+
 ```bash
 gh pr view --json number,url 2>/dev/null
 ```
@@ -191,6 +203,7 @@ gh pr view --json number,url 2>/dev/null
 ## Step 7 — Report back
 
 Print a concise summary:
+
 - Which pre-flight checks passed
 - Branch name and whether it was created or already existed
 - Commit message used
