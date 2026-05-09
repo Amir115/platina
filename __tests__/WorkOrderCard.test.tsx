@@ -79,7 +79,9 @@ describe('WorkOrderCard', () => {
 
   it('calls onStatusChange with next status when CTA clicked', () => {
     const onStatusChange = vi.fn();
-    render(<WorkOrderCard order={makeOrder({ status: 'PENDING' })} onStatusChange={onStatusChange} />);
+    render(
+      <WorkOrderCard order={makeOrder({ status: 'PENDING' })} onStatusChange={onStatusChange} />,
+    );
     fireEvent.click(screen.getByRole('button', { name: /התחל טיפול/ }));
     expect(onStatusChange).toHaveBeenCalledWith('order-1', 'IN_PROGRESS');
   });
