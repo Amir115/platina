@@ -1,12 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { z } from 'zod';
-
-const UpdateWorkOrderSchema = z.object({
-  status: z.enum(['PENDING', 'IN_PROGRESS', 'READY', 'DELIVERED']).optional(),
-  notes: z.string().optional(),
-  finalCost: z.number().positive().optional(),
-});
+import { UpdateWorkOrderSchema } from '@/lib/validators/work-orders';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
