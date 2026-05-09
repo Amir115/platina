@@ -192,3 +192,4 @@ docs/
 - Skip the end-of-session update
 - Let the developer update these files manually
 - Leave `docs/changelog.md` without a "Next step" entry
+- Open a separate PR just for `docs/` updates — knowledge base changes must ship in the same PR as the code that triggered them. If docs are out of date, update them in the next feature/fix PR, not a standalone one
