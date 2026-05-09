@@ -6,22 +6,22 @@
 
 ## Stack
 
-| Layer       | Technology     | Version | Reason                                      |
-| ----------- | -------------- | ------- | ------------------------------------------- |
-| Framework   | Next.js        | 16.2.6  | Fullstack, App Router, SaaS-ready           |
-| Runtime     | React          | 19.2.4  | —                                           |
-| Language    | TypeScript     | 5       | Type safety, DX                             |
-| Database    | PostgreSQL      | —       | Relational, suitable for vehicle/customer data |
-| ORM         | Prisma         | 6.19.3  | Type-safe, migrations, DX                   |
-| Validation  | Zod            | 4.4.3   | Type inference, works well with Next.js     |
-| Styling     | Tailwind CSS   | 4       | Utility-first, fast for prototyping         |
-| Linting     | ESLint         | 9       | Zero-warnings policy                        |
-| Formatting  | Prettier       | 3       | Code consistency                            |
-| Testing     | Vitest         | 4       | jsdom + @testing-library/react              |
-| CI/CD       | GitHub Actions | —       | type-check + lint + format + test + build   |
-| Hosting DB  | Supabase       | —       | Free tier, PostgreSQL, zero-ops             |
-| Hosting App | Vercel         | —       | (future)                                    |
-| Auth        | NextAuth.js    | —       | (future)                                    |
+| Layer       | Technology     | Version | Reason                                         |
+| ----------- | -------------- | ------- | ---------------------------------------------- |
+| Framework   | Next.js        | 16.2.6  | Fullstack, App Router, SaaS-ready              |
+| Runtime     | React          | 19.2.4  | —                                              |
+| Language    | TypeScript     | 5       | Type safety, DX                                |
+| Database    | PostgreSQL     | —       | Relational, suitable for vehicle/customer data |
+| ORM         | Prisma         | 6.19.3  | Type-safe, migrations, DX                      |
+| Validation  | Zod            | 4.4.3   | Type inference, works well with Next.js        |
+| Styling     | Tailwind CSS   | 4       | Utility-first, fast for prototyping            |
+| Linting     | ESLint         | 9       | Zero-warnings policy                           |
+| Formatting  | Prettier       | 3       | Code consistency                               |
+| Testing     | Vitest         | 4       | jsdom + @testing-library/react                 |
+| CI/CD       | GitHub Actions | —       | type-check + lint + format + test + build      |
+| Hosting DB  | Supabase       | —       | Free tier, PostgreSQL, zero-ops                |
+| Hosting App | Vercel         | —       | (future)                                       |
+| Auth        | NextAuth.js    | —       | (future)                                       |
 
 ---
 
