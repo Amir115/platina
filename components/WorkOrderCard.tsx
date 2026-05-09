@@ -1,14 +1,14 @@
-import type { WorkOrderWithRelations, WorkOrderStatus } from '@/types'
-import { STATUS_TRANSITIONS, STATUS_CTA } from '@/types'
-import { StatusBadge } from './StatusBadge'
+import type { WorkOrderWithRelations, WorkOrderStatus } from '@/types';
+import { STATUS_TRANSITIONS, STATUS_CTA } from '@/types';
+import { StatusBadge } from './StatusBadge';
 
 interface WorkOrderCardProps {
-  order: WorkOrderWithRelations
-  onStatusChange: (id: string, status: WorkOrderStatus) => void
+  order: WorkOrderWithRelations;
+  onStatusChange: (id: string, status: WorkOrderStatus) => void;
 }
 
 export function WorkOrderCard({ order, onStatusChange }: WorkOrderCardProps) {
-  const nextStatus = STATUS_TRANSITIONS[order.status]
+  const nextStatus = STATUS_TRANSITIONS[order.status];
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm flex flex-col gap-3">
@@ -39,5 +39,5 @@ export function WorkOrderCard({ order, onStatusChange }: WorkOrderCardProps) {
         </button>
       )}
     </div>
-  )
+  );
 }

@@ -45,12 +45,12 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## API
 
-| Method | Endpoint                  | Description        |
-|--------|---------------------------|--------------------|
-| GET    | `/api/work-orders`        | List work orders   |
-| POST   | `/api/work-orders`        | Create work order  |
-| GET    | `/api/work-orders/:id`    | Get single order   |
-| PATCH  | `/api/work-orders/:id`    | Update status/cost |
+| Method | Endpoint               | Description        |
+| ------ | ---------------------- | ------------------ |
+| GET    | `/api/work-orders`     | List work orders   |
+| POST   | `/api/work-orders`     | Create work order  |
+| GET    | `/api/work-orders/:id` | Get single order   |
+| PATCH  | `/api/work-orders/:id` | Update status/cost |
 
 ## Status Flow
 

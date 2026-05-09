@@ -1,32 +1,36 @@
-'use client'
-import { useState, useEffect, useCallback } from 'react'
-import type { WorkOrderWithRelations, WorkOrderStatus } from '@/types'
-import { WorkOrderCard } from '@/components/WorkOrderCard'
-import { NewOrderModal } from '@/components/NewOrderModal'
+'use client';
+import { useState, useEffect } from 'react';
+import type { WorkOrderWithRelations, WorkOrderStatus } from '@/types';
+import { WorkOrderCard } from '@/components/WorkOrderCard';
+import { NewOrderModal } from '@/components/NewOrderModal';
 
 export default function DashboardPage() {
-  const [orders, setOrders]           = useState<WorkOrderWithRelations[]>([])
-  const [search, setSearch]           = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [modalOpen, setModalOpen]     = useState(false)
+  const [orders, setOrders] = useState<WorkOrderWithRelations[]>([]);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [refreshTick, setRefreshTick] = useState(0);
 
-  const fetchOrders = useCallback(async () => {
-    const params = new URLSearchParams()
-    if (search)       params.set('search', search)
-    if (statusFilter) params.set('status', statusFilter)
-    const res = await fetch(`/api/work-orders?${params}`)
-    if (res.ok) setOrders(await res.json())
-  }, [search, statusFilter])
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (statusFilter) params.set('status', statusFilter);
+    fetch(`/api/work-orders?${params}`)
+      .then((res) => (res.ok ? res.json() : []))
+      .then(setOrders);
+  }, [search, statusFilter, refreshTick]);
 
-  useEffect(() => { fetchOrders() }, [fetchOrders])
+  function refresh() {
+    setRefreshTick((t) => t + 1);
+  }
 
   async function handleStatusChange(id: string, status: WorkOrderStatus) {
     await fetch(`/api/work-orders/${id}`, {
-      method:  'PATCH',
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ status }),
-    })
-    fetchOrders()
+      body: JSON.stringify({ status }),
+    });
+    refresh();
   }
 
   return (
@@ -49,12 +53,12 @@ export default function DashboardPage() {
             type="text"
             placeholder="חיפוש לפי לקוח או לוחית רישוי..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             className="flex-1 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <select
             value={statusFilter}
-            onChange={e => setStatusFilter(e.target.value)}
+            onChange={(e) => setStatusFilter(e.target.value)}
             className="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">כל הסטטוסים</option>
@@ -72,22 +76,14 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {orders.map(order => (
-              <WorkOrderCard
-                key={order.id}
-                order={order}
-                onStatusChange={handleStatusChange}
-              />
+            {orders.map((order) => (
+              <WorkOrderCard key={order.id} order={order} onStatusChange={handleStatusChange} />
             ))}
           </div>
         )}
       </main>
 
-      <NewOrderModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onCreated={fetchOrders}
-      />
+      <NewOrderModal open={modalOpen} onClose={() => setModalOpen(false)} onCreated={refresh} />
     </div>
-  )
+  );
 }
