@@ -6,6 +6,7 @@ This file provides context and instructions for Claude Code when working on this
 
 **Platina (פלטינה)** is a cloud-native SaaS for garage and car dealership management in Israel.
 Target market: small-to-medium independent garages. Main pain points in the current market:
+
 - All existing solutions (Nesher, Mosechit) are desktop-only, old UX, modular pricing
 - No cloud-native solution exists
 - No WhatsApp integration (everyone uses WhatsApp in Israel, not SMS)
@@ -17,21 +18,22 @@ Target market: small-to-medium independent garages. Main pain points in the curr
 
 ## Tech Stack
 
-| Layer      | Technology                          |
-|------------|-------------------------------------|
-| Framework  | Next.js 14 (App Router)             |
-| Language   | TypeScript                          |
-| Database   | PostgreSQL                          |
-| ORM        | Prisma                              |
-| Validation | Zod                                 |
-| Styling    | Tailwind CSS                        |
-| Auth       | NextAuth.js (not yet implemented)   |
+| Layer      | Technology                        |
+| ---------- | --------------------------------- |
+| Framework  | Next.js 14 (App Router)           |
+| Language   | TypeScript                        |
+| Database   | PostgreSQL                        |
+| ORM        | Prisma                            |
+| Validation | Zod                               |
+| Styling    | Tailwind CSS                      |
+| Auth       | NextAuth.js (not yet implemented) |
 
 ---
 
 ## First Run Instructions
 
 On first run, before doing anything else:
+
 1. Read this file (CLAUDE.md) and CONTEXT.md in full
 2. Run `ls -la` and verify the project structure matches the structure defined below
 3. Create any missing files or directories
@@ -71,6 +73,7 @@ platina/
 ## Database Models
 
 ### WorkOrder
+
 - `id` — cuid
 - `orderNumber` — auto-increment (displayed as #1001, #1002...)
 - `status` — enum: `PENDING | IN_PROGRESS | READY | DELIVERED`
@@ -82,10 +85,12 @@ platina/
 - Relations: `customer` (Customer), `vehicle` (Vehicle)
 
 ### Customer
+
 - `id`, `name`, `phone`, `email?`
 - One customer can have many WorkOrders
 
 ### Vehicle
+
 - `id`, `licensePlate` (unique), `make`, `model`, `year`, `color?`, `mileage?`
 - One vehicle can have many WorkOrders
 
@@ -100,6 +105,7 @@ platina/
 - Find-or-create pattern for Customer and Vehicle on WorkOrder creation
 
 ### Endpoints (implemented)
+
 ```
 GET  /api/work-orders           → list, supports ?status= and ?search=
 POST /api/work-orders           → create (also creates customer/vehicle if not exists)
@@ -135,9 +141,9 @@ PATCH /api/work-orders/:id      → update status, notes, finalCost
 
 ```ts
 const STATUS_LABELS = {
-  PENDING:     "ממתין",
-  IN_PROGRESS: "בטיפול",
-  READY:       "מוכן",
-  DELIVERED:   "נמסר",
-}
+  PENDING: 'ממתין',
+  IN_PROGRESS: 'בטיפול',
+  READY: 'מוכן',
+  DELIVERED: 'נמסר',
+};
 ```

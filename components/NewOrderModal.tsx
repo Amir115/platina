@@ -1,46 +1,46 @@
-'use client'
-import { useState } from 'react'
-import type { CreateWorkOrderInput } from '@/types'
+'use client';
+import { useState } from 'react';
+import type { CreateWorkOrderInput } from '@/types';
 
 interface NewOrderModalProps {
-  open: boolean
-  onClose: () => void
-  onCreated: () => void
+  open: boolean;
+  onClose: () => void;
+  onCreated: () => void;
 }
 
-const EMPTY_FORM: Partial<CreateWorkOrderInput> = {}
+const EMPTY_FORM: Partial<CreateWorkOrderInput> = {};
 
 export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) {
-  const [form, setForm]       = useState<Partial<CreateWorkOrderInput>>(EMPTY_FORM)
-  const [loading, setLoading] = useState(false)
-  const [error, setError]     = useState<string | null>(null)
+  const [form, setForm] = useState<Partial<CreateWorkOrderInput>>(EMPTY_FORM);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!open) return null
+  if (!open) return null;
 
   function set<K extends keyof CreateWorkOrderInput>(key: K, value: CreateWorkOrderInput[K]) {
-    setForm(f => ({ ...f, [key]: value }))
+    setForm((f) => ({ ...f, [key]: value }));
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
     try {
       const res = await fetch('/api/work-orders', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(form),
-      })
+        body: JSON.stringify(form),
+      });
       if (res.ok) {
-        setForm(EMPTY_FORM)
-        onCreated()
-        onClose()
+        setForm(EMPTY_FORM);
+        onCreated();
+        onClose();
       } else {
-        const data = await res.json()
-        setError(data?.error?.formErrors?.[0] ?? 'שגיאה ביצירת הכרטיס')
+        const data = await res.json();
+        setError(data?.error?.formErrors?.[0] ?? 'שגיאה ביצירת הכרטיס');
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -49,7 +49,12 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg" dir="rtl">
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <h2 className="text-lg font-bold">כרטיס עבודה חדש</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+          >
+            ×
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 py-4 space-y-3">
@@ -59,7 +64,7 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
               <input
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.customerName ?? ''}
-                onChange={e => set('customerName', e.target.value)}
+                onChange={(e) => set('customerName', e.target.value)}
                 required
               />
             </div>
@@ -68,7 +73,7 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
               <input
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.customerPhone ?? ''}
-                onChange={e => set('customerPhone', e.target.value)}
+                onChange={(e) => set('customerPhone', e.target.value)}
                 required
               />
             </div>
@@ -77,7 +82,7 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
               <input
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.licensePlate ?? ''}
-                onChange={e => set('licensePlate', e.target.value)}
+                onChange={(e) => set('licensePlate', e.target.value)}
                 required
               />
             </div>
@@ -89,7 +94,7 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
                 max={new Date().getFullYear() + 1}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.vehicleYear ?? ''}
-                onChange={e => set('vehicleYear', Number(e.target.value))}
+                onChange={(e) => set('vehicleYear', Number(e.target.value))}
                 required
               />
             </div>
@@ -99,7 +104,7 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
                 placeholder="Toyota"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.vehicleMake ?? ''}
-                onChange={e => set('vehicleMake', e.target.value)}
+                onChange={(e) => set('vehicleMake', e.target.value)}
                 required
               />
             </div>
@@ -109,7 +114,7 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
                 placeholder="Corolla"
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.vehicleModel ?? ''}
-                onChange={e => set('vehicleModel', e.target.value)}
+                onChange={(e) => set('vehicleModel', e.target.value)}
                 required
               />
             </div>
@@ -119,7 +124,7 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
                 rows={3}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 value={form.description ?? ''}
-                onChange={e => set('description', e.target.value)}
+                onChange={(e) => set('description', e.target.value)}
                 required
               />
             </div>
@@ -146,5 +151,5 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
         </form>
       </div>
     </div>
-  )
+  );
 }
