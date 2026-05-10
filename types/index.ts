@@ -4,6 +4,16 @@ export type CustomerWithRelations = Customer & {
   workOrders: (WorkOrder & { vehicle: Vehicle })[];
 };
 
+export type VehicleWithRelations = Vehicle & {
+  customer: Customer | null;
+  workOrders: (WorkOrder & { customer: Customer })[];
+};
+
+export type VehicleWithCustomer = Vehicle & {
+  customer: Customer | null;
+  _count: { workOrders: number };
+};
+
 export type { WorkOrderStatus };
 
 export type WorkOrderWithRelations = WorkOrder & {
@@ -20,6 +30,7 @@ export type CreateWorkOrderInput = {
   vehicleYear: number;
   description: string;
   estimatedCost?: number;
+  mileage?: number;
 };
 
 export type UpdateWorkOrderInput = {

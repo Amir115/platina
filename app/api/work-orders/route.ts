@@ -51,8 +51,18 @@ export async function POST(request: Request) {
         make: data.vehicleMake,
         model: data.vehicleModel,
         year: data.vehicleYear,
+        customerId: customer.id,
+        ...(data.mileage !== undefined ? { mileage: data.mileage } : {}),
       },
     });
+  } else {
+    // Backfill customer link and update mileage if provided
+    const updates: { customerId?: string; mileage?: number } = {};
+    if (!vehicle.customerId) updates.customerId = customer.id;
+    if (data.mileage !== undefined) updates.mileage = data.mileage;
+    if (Object.keys(updates).length > 0) {
+      vehicle = await prisma.vehicle.update({ where: { id: vehicle.id }, data: updates });
+    }
   }
 
   const workOrder = await prisma.workOrder.create({

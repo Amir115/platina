@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { NavSearch } from '@/components/NavSearch';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,6 +20,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               לקוחות
             </Link>
+            <Link
+              href="/vehicles"
+              className="text-gray-600 hover:text-blue-600 transition-colors font-medium"
+            >
+              רכבים
+            </Link>
+          </div>
+          <div className="flex-1 flex justify-start">
+            <NavSearch />
           </div>
         </div>
       </nav>

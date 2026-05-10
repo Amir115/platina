@@ -447,3 +447,89 @@
 - Add vehicle module (list, detail, link to work orders)
 - Add phone-format display normalization helper
 - Wire up "New work order" from customer detail with vehicle pre-fill
+
+---
+
+## Session 014 — Vehicle Module
+
+**Date:** 2026-05-11
+**Type:** Feature
+**PR:** (pending)
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2903849994
+
+### What was done
+
+#### Schema
+
+- Added `customerId String?` + `customer Customer? @relation(...)` to `Vehicle` (nullable for backward compat with existing rows)
+- Added `notes String?` to `Vehicle`
+- Added `vehicles Vehicle[]` to `Customer`
+- Created and applied migration `20260510205743_add_vehicle_customer_relation`
+
+#### API
+
+- `GET /api/vehicles` — list with `?search=` (plate/make/model/customer) and `?customerId=` filter
+- `POST /api/vehicles` — create vehicle linked to customer (plate uniqueness check)
+- `GET /api/vehicles/[id]` — single vehicle with customer + work order history
+- `PATCH /api/vehicles/[id]` — update mileage, color, notes, make, model, year, customerId
+- `GET /api/vehicles/search?plate=` — fast license plate lookup for nav search
+
+#### Work Order integration
+
+- `POST /api/work-orders` updated: new vehicles are linked to their customer on creation; existing orphaned vehicles get `customerId` backfilled
+- Added `mileage` field to `CreateWorkOrderSchema` and `CreateWorkOrderInput` — updates vehicle mileage on work order create
+- `NewOrderModal` updated: `prefillVehicle` prop, customer vehicle chips after customer select, plate search autocomplete, mileage field
+
+#### UI Components
+
+- `components/NavSearch.tsx` — global license plate search in nav bar, debounced, dropdown with results + "רכב חדש" shortcut
+- `components/VehicleModal.tsx` — create/edit modal with customer search dropdown, plate uniqueness check on blur
+
+#### Features
+
+- `app/(dashboard)/layout.tsx` — added "רכבים" nav link + NavSearch component
+- `app/(dashboard)/vehicles/page.tsx` — list: search, table (plate/make/customer/mileage/order count), click to detail
+- `app/(dashboard)/vehicles/[id]/page.tsx` — detail: large monospace plate, customer card, inline mileage editor, service history
+- `app/(dashboard)/customers/[id]/page.tsx` — vehicle chips now link to `/vehicles/[id]`
+
+#### Validators
+
+- `lib/validators/vehicles.ts` — `CreateVehicleSchema` and `UpdateVehicleSchema` with Israeli plate regex
+
+#### Types
+
+- `types/index.ts` — added `VehicleWithRelations`, `VehicleWithCustomer`; added `mileage?: number` to `CreateWorkOrderInput`
+
+### Files created
+
+- `prisma/migrations/20260510205743_add_vehicle_customer_relation/migration.sql`
+- `lib/validators/vehicles.ts`
+- `app/api/vehicles/route.ts`
+- `app/api/vehicles/[id]/route.ts`
+- `app/api/vehicles/search/route.ts`
+- `components/NavSearch.tsx`
+- `components/VehicleModal.tsx`
+- `app/(dashboard)/vehicles/page.tsx`
+- `app/(dashboard)/vehicles/[id]/page.tsx`
+- `__tests__/vehicles.test.ts`
+- `docs/features/vehicles.md`
+
+### Files modified
+
+- `prisma/schema.prisma`
+- `types/index.ts`
+- `lib/validators/work-orders.ts`
+- `app/api/work-orders/route.ts`
+- `app/(dashboard)/layout.tsx`
+- `app/(dashboard)/customers/[id]/page.tsx`
+- `components/NewOrderModal.tsx`
+
+### Bugs fixed
+
+- Work order create was creating vehicles with no `customerId` — now backfills the link on every create
+
+### Next step
+
+- Add phone-format display normalization helper
+- Work order detail page (`/work-orders/[id]`) — currently no dedicated page
+- Mileage history per work order (currently only stores latest value on vehicle)
