@@ -1,0 +1,22 @@
+name: Monday Link Check
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  monday-link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require Monday.com item link in PR description
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const pattern = /https:\/\/amir-dana-personal\.monday\.com\/boards\/5096146634\/pulses\/\d+/;
+            if (!pattern.test(body)) {
+              core.setFailed(
+                '❌ PR description must include a Monday.com item link (https://amir-dana-personal.monday.com/boards/...)',
+              );
+            }

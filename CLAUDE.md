@@ -177,11 +177,17 @@ docs/
 
 **At the end of every session:**
 
-1. Update `docs/changelog.md` with a new entry:
-   - What was built / changed
-   - Files created or modified
-   - Bugs fixed
-   - Next step
+1. Update `docs/changelog.md` with a new entry using this format:
+   ```
+   ## Session: YYYY-MM-DD
+   - Task: [task name]
+   - Monday item: https://amir-dana-personal.monday.com/boards/5096146634/pulses/[ITEM_ID]
+   - PR: [PR URL]
+   - Summary: [what was done]
+   - Files created or modified: [list]
+   - Bugs fixed: [list or none]
+   - Next step: [what comes next]
+   ```
 2. Update the relevant `docs/features/*.md` — mark completed items, add new ones
 3. If a new architectural decision was made → add to `docs/decisions.md`
 4. If a bug was found or fixed → update `docs/bugs.md`
@@ -203,6 +209,18 @@ Always use **squash and merge** when merging PRs — never regular merge or reba
 ```bash
 gh pr merge <number> --squash --delete-branch
 ```
+
+---
+
+## Monday.com ↔ GitHub PR Integration
+
+Every PR must be linked to a Monday.com item. When opening a PR:
+
+1. Include the Monday.com item URL in the PR description — required by CI:
+   `https://amir-dana-personal.monday.com/boards/5096146634/pulses/ITEM_ID`
+2. Immediately after the PR is created, set the item's `PR Link` column (column ID: `link_mm37p2cm`) to the PR URL via the Monday.com MCP tool
+
+The CI job `monday-link-check` enforces rule 1 — PRs without a Monday link will fail checks.
 
 ---
 
@@ -246,5 +264,8 @@ After any PR is merged during a session, always without being asked:
 
 1. `git checkout main`
 2. `git pull origin main`
+3. Extract the Monday.com item ID from the merged PR description (URL format: `https://amir-dana-personal.monday.com/boards/5096146634/pulses/ITEM_ID`)
+4. Update the item's `project_status` column to `Done` via the Monday.com MCP tool
+5. Update the item's `PR Link` column (column ID: `link_mm37p2cm`) with the merged PR URL
 
-This keeps the local `main` branch current so the next `/ship` rebase starts from the correct base.
+This keeps the local `main` branch current and the Monday board in sync after every merge.
