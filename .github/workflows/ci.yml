@@ -7,6 +7,22 @@ on:
     branches: [main]
 
 jobs:
+  monday-link-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Require Monday.com item link in PR description
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const pattern = /https:\/\/amir-dana-personal\.monday\.com\/boards\/5096146634\/pulses\/\d+/;
+            if (!pattern.test(body)) {
+              core.setFailed(
+                '❌ PR description must include a Monday.com item link (https://amir-dana-personal.monday.com/boards/...)',
+              );
+            }
+
   ci:
     runs-on: ubuntu-latest
 
