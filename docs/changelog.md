@@ -345,12 +345,38 @@
 
 ---
 
-## Session 012 — Customer Module
+## Session 012 — Incremental UI Component Strategy Rule
+
+**Date:** 2026-05-10
+**Type:** Process / Documentation
+**PR:** https://github.com/Amir115/platina/pull/11
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904955762
+
+### What was done
+
+- Added a UI component strategy section to `CLAUDE.md` defining how the design system is built incrementally as a byproduct of feature work — not as a separate phase
+- Rules: all reusable UI goes under `components/ui/` with clean typed props; never write one-off inline styles in page files; use consistent naming (`Button`, `Input`, `Card`, `Badge`, `Modal`, `Spinner`, `EmptyState`, `PageHeader`); always reuse existing components before creating new ones; RTL-first; Tailwind only
+
+### Files created / modified
+
+- `CLAUDE.md`
+
+### Bugs fixed
+
+- None
+
+### Next step
+
+- Apply strategy when building the Customer module and all subsequent features
+
+---
+
+## Session 013 — Customer Module
 
 **Date:** 2026-05-10
 **Type:** Feature
 **PR:** https://github.com/Amir115/platina/pull/12
-**Monday item:** (see board 5096146634)
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2903956202
 
 ### What was done
 
