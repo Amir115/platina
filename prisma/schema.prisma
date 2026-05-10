@@ -12,8 +12,9 @@ datasource db {
 model Customer {
   id         String      @id @default(cuid())
   name       String
-  phone      String
+  phone      String      @unique
   email      String?
+  notes      String?
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   workOrders WorkOrder[]

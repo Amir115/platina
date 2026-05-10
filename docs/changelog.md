@@ -197,3 +197,81 @@
 
 - Merge `infra/ship-skill` to main
 - Build actual feature (work orders — UI improvement)
+
+---
+
+## Session 007 — Customer Module
+
+**Date:** May 2026
+**Type:** Feature
+**Branch:** `feat/customer-module`
+
+### What was done
+
+#### Schema
+
+- Added `notes String?` to the `Customer` model
+- Added `@unique` constraint on `Customer.phone`
+- Created and applied migration `20260510000001_add_customer_notes_and_unique_phone`
+
+#### API
+
+- `GET /api/customers` — list with `?search=` (name or phone) and `?phone=` (exact match for uniqueness check)
+- `POST /api/customers` — create with phone uniqueness guard
+- `GET /api/customers/[id]` — single customer with linked work orders + vehicles
+- `PATCH /api/customers/[id]` — update with phone conflict check
+
+#### UI Components (`components/ui/`)
+
+- `Button.tsx` — primary / secondary / ghost, sm / md sizes
+- `Input.tsx` — with label, error, forwarded ref
+- `Modal.tsx` — generic title + close, `dir="rtl"`
+- `EmptyState.tsx` — title, description, optional action
+- `Spinner.tsx` — animated SVG
+
+#### Features
+
+- `components/CustomerModal.tsx` — create/edit modal with phone uniqueness blur check
+- `app/(dashboard)/layout.tsx` — shared nav bar with links to "כרטיסי עבודה" and "לקוחות"
+- `app/(dashboard)/customers/page.tsx` — customer list: search, table, empty state, add button
+- `app/(dashboard)/customers/[id]/page.tsx` — detail: info card, vehicles, work order history, edit + new order
+- `app/(dashboard)/page.tsx` — updated to use shared layout nav and `EmptyState`/`Button` primitives
+- `components/NewOrderModal.tsx` — added `prefillCustomer` prop + customer name search autocomplete with debounce
+
+#### Validators
+
+- `lib/validators/customers.ts` — `CreateCustomerSchema` and `UpdateCustomerSchema` with Israeli phone regex
+
+#### Types
+
+- `types/index.ts` — added `CustomerWithRelations`
+
+### Files created
+
+- `prisma/migrations/20260510000001_add_customer_notes_and_unique_phone/migration.sql`
+- `lib/validators/customers.ts`
+- `app/api/customers/route.ts`
+- `app/api/customers/[id]/route.ts`
+- `components/ui/Button.tsx`
+- `components/ui/Input.tsx`
+- `components/ui/Modal.tsx`
+- `components/ui/EmptyState.tsx`
+- `components/ui/Spinner.tsx`
+- `components/CustomerModal.tsx`
+- `app/(dashboard)/layout.tsx`
+- `app/(dashboard)/customers/page.tsx`
+- `app/(dashboard)/customers/[id]/page.tsx`
+- `docs/features/customers.md`
+
+### Files modified
+
+- `prisma/schema.prisma`
+- `types/index.ts`
+- `app/(dashboard)/page.tsx`
+- `components/NewOrderModal.tsx`
+
+### Next step
+
+- Add vehicle module (list, detail, link to work orders)
+- Add phone-format display normalization helper
+- Wire up "New work order" from customer detail with vehicle pre-fill
