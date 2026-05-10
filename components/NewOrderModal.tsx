@@ -1,24 +1,57 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import type { Customer } from '@prisma/client';
 import type { CreateWorkOrderInput } from '@/types';
 
 interface NewOrderModalProps {
   open: boolean;
   onClose: () => void;
   onCreated: () => void;
+  prefillCustomer?: { name: string; phone: string };
 }
 
 const EMPTY_FORM: Partial<CreateWorkOrderInput> = {};
 
-export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) {
-  const [form, setForm] = useState<Partial<CreateWorkOrderInput>>(EMPTY_FORM);
+export function NewOrderModal({ open, onClose, onCreated, prefillCustomer }: NewOrderModalProps) {
+  const [form, setForm] = useState<Partial<CreateWorkOrderInput>>(
+    prefillCustomer
+      ? { customerName: prefillCustomer.name, customerPhone: prefillCustomer.phone }
+      : EMPTY_FORM,
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [suggestions, setSuggestions] = useState<Customer[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   if (!open) return null;
 
   function set<K extends keyof CreateWorkOrderInput>(key: K, value: CreateWorkOrderInput[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function handleCustomerNameChange(value: string) {
+    set('customerName', value);
+    if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    if (value.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    searchTimeout.current = setTimeout(async () => {
+      const res = await fetch(`/api/customers?search=${encodeURIComponent(value)}`);
+      if (res.ok) {
+        const data: Customer[] = await res.json();
+        setSuggestions(data.slice(0, 5));
+        setShowSuggestions(true);
+      }
+    }, 300);
+  }
+
+  function selectCustomer(customer: Customer) {
+    set('customerName', customer.name);
+    set('customerPhone', customer.phone);
+    setSuggestions([]);
+    setShowSuggestions(false);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -59,14 +92,30 @@ export function NewOrderModal({ open, onClose, onCreated }: NewOrderModalProps) 
 
         <form onSubmit={handleSubmit} className="px-6 py-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div className="col-span-2">
+            <div className="col-span-2 relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">שם לקוח</label>
               <input
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={form.customerName ?? ''}
-                onChange={(e) => set('customerName', e.target.value)}
+                onChange={(e) => handleCustomerNameChange(e.target.value)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
                 required
               />
+              {showSuggestions && suggestions.length > 0 && (
+                <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 text-sm">
+                  {suggestions.map((c) => (
+                    <li
+                      key={c.id}
+                      onMouseDown={() => selectCustomer(c)}
+                      className="px-3 py-2 hover:bg-blue-50 cursor-pointer flex justify-between"
+                    >
+                      <span className="font-medium">{c.name}</span>
+                      <span className="text-gray-400">{c.phone}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">טלפון</label>

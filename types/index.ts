@@ -1,5 +1,9 @@
 import type { Customer, Vehicle, WorkOrder, WorkOrderStatus } from '@prisma/client';
 
+export type CustomerWithRelations = Customer & {
+  workOrders: (WorkOrder & { vehicle: Vehicle })[];
+};
+
 export type { WorkOrderStatus };
 
 export type WorkOrderWithRelations = WorkOrder & {
