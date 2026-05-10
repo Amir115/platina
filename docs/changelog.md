@@ -32,8 +32,10 @@
 
 ## Session 002 — Infrastructure Setup + First MVP
 
-**Date:** May 2026
+**Date:** 2026-05-09
 **Type:** Infrastructure + Feature
+**PR:** https://github.com/Amir115/platina/pull/1
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904839174
 
 ### What was done
 
@@ -91,9 +93,10 @@
 
 ## Session 003 — CI/CD Infrastructure + Code Quality
 
-**Date:** May 2026
+**Date:** 2026-05-09
 **Type:** Infrastructure
-**PR:** #2 (`infra: add Prettier, ESLint hardening, and GitHub Actions CI`)
+**PR:** https://github.com/Amir115/platina/pull/2
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904828168
 
 ### What was done
 
@@ -118,9 +121,10 @@
 
 ## Session 004 — Vitest + Unit Tests
 
-**Date:** May 2026
+**Date:** 2026-05-09
 **Type:** Infrastructure
-**PR:** #3 (`infra: add Vitest unit tests and CI test step`)
+**PR:** https://github.com/Amir115/platina/pull/3
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904839145
 
 ### What was done
 
@@ -153,9 +157,10 @@
 
 ## Session 005 — Market Research Document
 
-**Date:** May 2026
+**Date:** 2026-05-09
 **Type:** Documentation
-**PR:** #4 (`docs: add product research document`)
+**PR:** https://github.com/Amir115/platina/pull/4
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904827955
 
 ### What was done
 
@@ -174,9 +179,10 @@
 
 ## Session 006 — Claude Code Tooling: /ship Skill
 
-**Date:** May 2026
+**Date:** 2026-05-09
 **Type:** Infrastructure
-**Branch:** `infra/ship-skill` (not yet merged)
+**PR:** https://github.com/Amir115/platina/pull/5
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904852503
 
 ### What was done
 
@@ -195,16 +201,182 @@
 
 ### Next step
 
-- Merge `infra/ship-skill` to main
-- Build actual feature (work orders — UI improvement)
+- Build actual features (work orders UI, customer module)
 
 ---
 
-## Session 007 — Customer Module
+## Session 007 — Knowledge Base Creation
 
-**Date:** May 2026
+**Date:** 2026-05-09
+**Type:** Documentation / Infrastructure
+**PR:** https://github.com/Amir115/platina/pull/6
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904818270
+
+### What was done
+
+- Created the `docs/` knowledge base from scratch with five files: changelog, architecture, decisions, bugs, feature docs
+- Backfilled session history for Sessions 003–006 (PRs #2–5) into `docs/changelog.md`
+- Extended `CLAUDE.md` with full knowledge-base management rules: what to read at session start, what to update at session end, and the required changelog entry format
+
+### Files created / modified
+
+- `CLAUDE.md`
+- `docs/architecture.md` (new)
+- `docs/bugs.md` (new)
+- `docs/changelog.md` (new)
+- `docs/decisions.md` (new)
+- `docs/features/work-orders.md` (new)
+
+### Bugs fixed
+
+- None
+
+### Next step
+
+- Keep docs updated in every subsequent PR; enforce rule in CLAUDE.md
+
+---
+
+## Session 008 — Docs-in-Same-PR Rule
+
+**Date:** 2026-05-09
+**Type:** Documentation / Process
+**PR:** https://github.com/Amir115/platina/pull/7
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2905044601
+
+### What was done
+
+- Added a rule to `CLAUDE.md` mandating that `docs/` updates ship in the same PR as the code change that triggered them — no standalone docs-only PRs allowed
+- Clarifies that if docs are out of date, they get updated in the next feature/fix PR
+
+### Files created / modified
+
+- `CLAUDE.md`
+
+### Bugs fixed
+
+- None
+
+### Next step
+
+- Enforce rule going forward in all PRs
+
+---
+
+## Session 009 — Documentation Translation to English
+
+**Date:** 2026-05-09
+**Type:** Documentation
+**PR:** https://github.com/Amir115/platina/pull/8
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904822546
+
+### What was done
+
+- Translated `docs/architecture.md` from Hebrew to English to align with the project's documentation language policy (English for all docs, Hebrew only for end-user UI strings)
+- Fixed Prettier table formatting in the architecture doc
+
+### Files created / modified
+
+- `docs/architecture.md`
+
+### Bugs fixed
+
+- None
+
+### Next step
+
+- Maintain English-only policy in all future docs
+
+---
+
+## Session 010 — Post-Merge Cleanup and Squash Merge Rules
+
+**Date:** 2026-05-09
+**Type:** Process / Infrastructure
+**PR:** https://github.com/Amir115/platina/pull/9
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904822601
+
+### What was done
+
+- Added two rules to `CLAUDE.md`:
+  1. **Post-merge cleanup:** after any PR is merged, automatically `git checkout main` + `git pull origin main` — no prompting required
+  2. **Squash merge strategy:** always use `gh pr merge <number> --squash --delete-branch`; never regular merge or rebase merge
+
+### Files created / modified
+
+- `CLAUDE.md`
+
+### Bugs fixed
+
+- None
+
+### Next step
+
+- Apply rules automatically in all future sessions without being asked
+
+---
+
+## Session 011 — Monday.com MCP Server Configuration
+
+**Date:** 2026-05-09
+**Type:** Infrastructure
+**PR:** https://github.com/Amir115/platina/pull/10
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904852676
+
+### What was done
+
+- Configured the Monday.com MCP server in `.claude/settings.json` (enabled under `mcpServers`)
+- Added `.mcp.json` to `.gitignore` to prevent API keys from being committed
+- Added `CLAUDE.md` rules for task management: fetch open tasks from board `5096146634` at session start, prioritize by active/in-progress status
+
+### Files created / modified
+
+- `.claude/settings.json`
+- `.gitignore`
+- `CLAUDE.md`
+
+### Bugs fixed
+
+- None
+
+### Next step
+
+- Use Monday.com MCP at the start of every session to fetch active tasks
+
+---
+
+## Session 012 — Incremental UI Component Strategy Rule
+
+**Date:** 2026-05-10
+**Type:** Process / Documentation
+**PR:** https://github.com/Amir115/platina/pull/11
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904955762
+
+### What was done
+
+- Added a UI component strategy section to `CLAUDE.md` defining how the design system is built incrementally as a byproduct of feature work — not as a separate phase
+- Rules: all reusable UI goes under `components/ui/` with clean typed props; never write one-off inline styles in page files; use consistent naming (`Button`, `Input`, `Card`, `Badge`, `Modal`, `Spinner`, `EmptyState`, `PageHeader`); always reuse existing components before creating new ones; RTL-first; Tailwind only
+
+### Files created / modified
+
+- `CLAUDE.md`
+
+### Bugs fixed
+
+- None
+
+### Next step
+
+- Apply strategy when building the Customer module and all subsequent features
+
+---
+
+## Session 013 — Customer Module
+
+**Date:** 2026-05-10
 **Type:** Feature
-**Branch:** `feat/customer-module`
+**PR:** https://github.com/Amir115/platina/pull/12
+**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2903956202
 
 ### What was done
 
