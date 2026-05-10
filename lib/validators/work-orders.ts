@@ -16,6 +16,7 @@ export const CreateWorkOrderSchema = z.object({
     .max(new Date().getFullYear() + 1),
   description: z.string().min(3),
   estimatedCost: z.number().positive().optional(),
+  mileage: z.number().int().min(0).optional(),
 });
 
 export const UpdateWorkOrderSchema = z.object({

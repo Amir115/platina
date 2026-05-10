@@ -18,6 +18,7 @@ model Customer {
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
   workOrders WorkOrder[]
+  vehicles   Vehicle[]
 
   @@map("customers")
 }
@@ -30,6 +31,9 @@ model Vehicle {
   year         Int
   color        String?
   mileage      Int?
+  notes        String?
+  customerId   String?
+  customer     Customer?   @relation(fields: [customerId], references: [id])
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   workOrders   WorkOrder[]

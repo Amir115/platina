@@ -98,12 +98,13 @@ export default function CustomerDetailPage() {
           <h3 className="text-sm font-semibold text-gray-700 mb-3">רכבים</h3>
           <div className="flex flex-wrap gap-2">
             {vehicles.map((v) => (
-              <span
+              <Link
                 key={v.id}
-                className="bg-gray-100 text-gray-700 text-sm px-3 py-1.5 rounded-lg font-medium"
+                href={`/vehicles/${v.id}`}
+                className="bg-gray-100 hover:bg-blue-50 text-gray-700 text-sm px-3 py-1.5 rounded-lg font-medium transition-colors"
               >
-                {v.make} {v.model} {v.year} · {v.licensePlate}
-              </span>
+                {v.make} {v.model} {v.year} · <span className="font-mono">{v.licensePlate}</span>
+              </Link>
             ))}
           </div>
         </div>

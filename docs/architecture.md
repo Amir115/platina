@@ -40,15 +40,17 @@
 
 ### vehicles
 
-| Column       | Type    | Notes              |
-| ------------ | ------- | ------------------ |
-| id           | cuid    | PK                 |
-| licensePlate | String  | unique             |
-| make         | String  | Manufacturer       |
-| model        | String  | Model              |
-| year         | Int     | Manufacturing year |
-| color        | String? | Optional           |
-| mileage      | Int?    | Optional           |
+| Column       | Type    | Notes                                         |
+| ------------ | ------- | --------------------------------------------- |
+| id           | cuid    | PK                                            |
+| licensePlate | String  | unique                                        |
+| make         | String  | Manufacturer                                  |
+| model        | String  | Model                                         |
+| year         | Int     | Manufacturing year                            |
+| color        | String? | Optional                                      |
+| mileage      | Int?    | Latest recorded odometer reading              |
+| notes        | String? | Optional                                      |
+| customerId   | FK?     | → customers (nullable for historical records) |
 
 ### work_orders
 
@@ -71,12 +73,26 @@
 
 ```
 /api/
-└── work-orders/
-    ├── GET    — list (supports ?status= and ?search=)
-    ├── POST   — create
+├── work-orders/
+│   ├── GET    — list (supports ?status= and ?search=)
+│   ├── POST   — create (links vehicle to customer, updates mileage if provided)
+│   └── [id]/
+│       ├── GET   — single
+│       └── PATCH — update status / cost / notes
+├── customers/
+│   ├── GET    — list (?search= or ?phone= for uniqueness check)
+│   ├── POST   — create
+│   └── [id]/
+│       ├── GET   — single with work orders + vehicles
+│       └── PATCH — update
+└── vehicles/
+    ├── GET    — list (?search= or ?customerId=)
+    ├── POST   — create linked to customer
+    ├── search/
+    │   └── GET — fast plate lookup (?plate=, max 8 results)
     └── [id]/
-        ├── GET   — single
-        └── PATCH — update status / cost / notes
+        ├── GET   — single with customer + work order history
+        └── PATCH — update mileage / color / notes / make / model / year
 ```
 
 ### Patterns
@@ -84,15 +100,15 @@
 - **Find-or-create** for customer by phone, for vehicle by licensePlate
 - **Zod validation** on all inputs
 - **Status transitions** one-directional: PENDING → IN_PROGRESS → READY → DELIVERED
+- **Customer backfill** — work order create links vehicle to customer; backfills orphaned vehicles
 
 ---
 
 ## Validators
 
-Zod schemas extracted to `lib/validators/work-orders.ts`:
-
-- `CreateWorkOrderSchema` — validates POST body: customer name/phone, license plate (uppercased), vehicle make/model/year (1980–current+1), description, optional estimatedCost
-- `UpdateWorkOrderSchema` — validates PATCH body: optional status / notes / finalCost
+- `lib/validators/work-orders.ts` — `CreateWorkOrderSchema` (includes optional `mileage`), `UpdateWorkOrderSchema`
+- `lib/validators/customers.ts` — `CreateCustomerSchema`, `UpdateCustomerSchema` (Israeli phone regex)
+- `lib/validators/vehicles.ts` — `CreateVehicleSchema`, `UpdateVehicleSchema` (Israeli plate regex: `/^\d{2,3}-\d{2,3}-\d{2,3}$/`)
 
 ---
 
@@ -101,6 +117,7 @@ Zod schemas extracted to `lib/validators/work-orders.ts`:
 ```
 __tests__/
 ├── schemas.test.ts         # 14 unit tests — CreateWorkOrderSchema + UpdateWorkOrderSchema
+├── vehicles.test.ts        # 15 unit tests — CreateVehicleSchema + UpdateVehicleSchema
 ├── StatusBadge.test.tsx    # React render tests for StatusBadge component
 └── WorkOrderCard.test.tsx  # React render tests for WorkOrderCard component
 ```
