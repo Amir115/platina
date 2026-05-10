@@ -26,21 +26,26 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const parsed = CreateCustomerSchema.safeParse(body);
+  try {
+    const body = await request.json();
+    const parsed = CreateCustomerSchema.safeParse(body);
 
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+    }
+
+    const existing = await prisma.customer.findFirst({ where: { phone: parsed.data.phone } });
+    if (existing) {
+      return NextResponse.json(
+        { error: { fieldErrors: { phone: ['מספר טלפון כבר קיים במערכת'] } } },
+        { status: 409 },
+      );
+    }
+
+    const customer = await prisma.customer.create({ data: parsed.data });
+    return NextResponse.json(customer, { status: 201 });
+  } catch (e) {
+    console.error('[POST /api/customers]', e);
+    return NextResponse.json({ error: { formErrors: ['שגיאת שרת, נסה שנית'] } }, { status: 500 });
   }
-
-  const existing = await prisma.customer.findUnique({ where: { phone: parsed.data.phone } });
-  if (existing) {
-    return NextResponse.json(
-      { error: { fieldErrors: { phone: ['מספר טלפון כבר קיים במערכת'] } } },
-      { status: 409 },
-    );
-  }
-
-  const customer = await prisma.customer.create({ data: parsed.data });
-  return NextResponse.json(customer, { status: 201 });
 }

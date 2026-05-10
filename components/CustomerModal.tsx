@@ -27,6 +27,7 @@ export function CustomerModal({ open, onClose, onSaved, customer }: CustomerModa
     notes: customer?.notes ?? '',
   });
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [phoneChecking, setPhoneChecking] = useState(false);
 
@@ -53,6 +54,7 @@ export function CustomerModal({ open, onClose, onSaved, customer }: CustomerModa
     e.preventDefault();
     setLoading(true);
     setErrors({});
+    setSubmitError(null);
 
     const payload = {
       name: form.name,
@@ -75,11 +77,20 @@ export function CustomerModal({ open, onClose, onSaved, customer }: CustomerModa
         onSaved();
         onClose();
       } else {
-        const data = await res.json();
-        const fieldErrors = data?.error?.fieldErrors ?? {};
-        setErrors(
-          Object.fromEntries(Object.entries(fieldErrors).map(([k, v]) => [k, (v as string[])[0]])),
-        );
+        try {
+          const data = await res.json();
+          const fieldErrors = data?.error?.fieldErrors ?? {};
+          const mapped = Object.fromEntries(
+            Object.entries(fieldErrors).map(([k, v]) => [k, (v as string[])[0]]),
+          );
+          if (Object.keys(mapped).length > 0) {
+            setErrors(mapped);
+          } else {
+            setSubmitError(data?.error?.formErrors?.[0] ?? 'שגיאה לא צפויה, נסה שנית');
+          }
+        } catch {
+          setSubmitError('שגיאת שרת, נסה שנית');
+        }
       }
     } finally {
       setLoading(false);
@@ -121,6 +132,8 @@ export function CustomerModal({ open, onClose, onSaved, customer }: CustomerModa
             onChange={(e) => set('notes', e.target.value)}
           />
         </div>
+
+        {submitError && <p className="text-sm text-red-600">{submitError}</p>}
 
         <div className="flex gap-2 justify-start pt-1">
           <Button type="submit" disabled={loading || phoneChecking}>
