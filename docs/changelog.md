@@ -454,7 +454,7 @@
 
 **Date:** 2026-05-11
 **Type:** Feature
-**PR:** (pending)
+**PR:** https://github.com/Amir115/platina/pull/15
 **Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2903849994
 
 ### What was done
