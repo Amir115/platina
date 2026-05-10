@@ -220,6 +220,26 @@ The Monday.com MCP server is configured in `.mcp.json` and enabled via `.claude/
 
 ---
 
+## UI Component Strategy
+
+We are building a design system incrementally — not as a separate phase, but as a byproduct of building features.
+
+**Rules for every UI component you write:**
+
+- Place all reusable UI components under `src/components/ui/` with clean, typed props
+- Never write one-off inline styles or ad-hoc Tailwind classes directly in page files — always extract to a component
+- Use consistent naming: `Button`, `Input`, `Card`, `Badge`, `Modal`, `Spinner`, `EmptyState`, `PageHeader`
+- Every component must support RTL out of the box (`dir="rtl"` on root is already set)
+- Use Tailwind utility classes only — no custom CSS unless absolutely necessary
+- If a component already exists in `src/components/ui/`, always reuse it — never duplicate
+
+**What this means in practice:**
+When building Customer module, Vehicle module, or any new feature — if you need a button, check if `Button` exists in `src/components/ui/`. If not, create it there first, then use it. Same for inputs, cards, modals, badges.
+
+The formal design system (Storybook, full token documentation) comes later. For now: clean components, consistent props, RTL-first.
+
+---
+
 ## Post-Merge Cleanup
 
 After any PR is merged during a session, always without being asked:
