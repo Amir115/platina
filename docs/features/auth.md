@@ -24,13 +24,13 @@
 
 ## Routes
 
-| Route             | Type                        | Description                       |
-| ----------------- | --------------------------- | --------------------------------- |
-| `/sign-in`        | Public                      | Clerk SignIn component             |
-| `/sign-up`        | Public                      | Clerk SignUp component             |
-| `/onboarding`     | Public (authed, no garage)  | Create garage after signup        |
-| `/dashboard`      | Protected                   | Landing page with nav links        |
-| `/api/onboarding` | Protected                   | POST — creates Garage record       |
+| Route             | Type                       | Description                  |
+| ----------------- | -------------------------- | ---------------------------- |
+| `/sign-in`        | Public                     | Clerk SignIn component       |
+| `/sign-up`        | Public                     | Clerk SignUp component       |
+| `/onboarding`     | Public (authed, no garage) | Create garage after signup   |
+| `/dashboard`      | Protected                  | Landing page with nav links  |
+| `/api/onboarding` | Protected                  | POST — creates Garage record |
 
 ## Environment variables required
 
