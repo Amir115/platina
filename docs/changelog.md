@@ -573,7 +573,7 @@
 - Task: Add authentication and garage multi-tenancy
 - Monday item: https://amird-company.monday.com/boards/18413512127/pulses/12030634149
 - PR: https://github.com/Amir115/platina/pull/17
-- Summary: Integrated Clerk auth with ClerkProvider, middleware, sign-in/sign-up pages, onboarding flow, and garage-scoped multi-tenancy. Added Garage model with row-level isolation via garageId on all existing models. All API routes now scope queries by garageId via getGarageContext(). Dashboard stub at /dashboard shows garage name and UserButton.
+- Summary: Integrated Clerk v7 auth with ClerkProvider, middleware, sign-in/sign-up pages, onboarding flow, and garage-scoped multi-tenancy. Added Garage model with row-level isolation via garageId on all existing models. All API routes now scope queries by garageId via getGarageContext(). Dashboard stub at /dashboard shows garage name and UserButton. Fixed post-merge issues: Clerk v7 redirect env var names, dashboard layout server-side onboarding redirect, and "פלטינה" nav title now links back to /dashboard.
 - Files created or modified:
   - `middleware.ts` — Clerk middleware with public/protected route split
   - `app/layout.tsx` — wrapped with ClerkProvider
@@ -594,10 +594,11 @@
   - `app/api/vehicles/route.ts` — scoped by garageId
   - `app/api/vehicles/[id]/route.ts` — scoped by garageId
   - `app/api/vehicles/search/route.ts` — scoped by garageId
-  - `app/(dashboard)/layout.tsx` — added UserButton to nav
+  - `app/(dashboard)/layout.tsx` — UserButton in nav; async garage check redirects to onboarding; "פלטינה" title links to /dashboard
   - `__tests__/auth.test.ts` — unit tests for OnboardingSchema and getGarageContext
-  - `.env.local` — added Clerk env vars (empty values)
-  - `.env.example` — documented all required env vars
+  - `.env.example` — documented all required env vars with Clerk v7 names
   - `docs/features/auth.md` — new feature doc
-- Bugs fixed: none
-- Next step: Fill in Clerk API keys in .env.local after creating app at clerk.com; add work order detail page (/work-orders/[id]); add phone normalization helper
+- Bugs fixed:
+  - SSO sign-in was not redirecting to onboarding — fixed by server-side garage check in dashboard layout
+  - Clerk v7 redirect env vars renamed from AFTER_SIGN_IN/UP_URL to SIGN_IN_FALLBACK_REDIRECT_URL / SIGN_UP_FORCE_REDIRECT_URL
+- Next step: Add work order detail page (/work-orders/[id]); add phone normalization helper
