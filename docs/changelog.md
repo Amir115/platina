@@ -565,3 +565,40 @@
 - Add phone-format display normalization helper
 - Work order detail page (`/work-orders/[id]`) — currently no dedicated page
 - Mileage history per work order (currently only stores latest value on vehicle)
+
+---
+
+## Session: 2026-05-17
+
+- Task: Add authentication and garage multi-tenancy
+- Monday item: https://amird-company.monday.com/boards/18413512127/pulses/12030634149
+- PR: https://github.com/Amir115/platina/pull/17
+- Summary: Integrated Clerk v7 auth with ClerkProvider, middleware, sign-in/sign-up pages, onboarding flow, and garage-scoped multi-tenancy. Added Garage model with row-level isolation via garageId on all existing models. All API routes now scope queries by garageId via getGarageContext(). Dashboard stub at /dashboard shows garage name and UserButton. Fixed post-merge issues: Clerk v7 redirect env var names, dashboard layout server-side onboarding redirect, and "פלטינה" nav title now links back to /dashboard.
+- Files created or modified:
+  - `middleware.ts` — Clerk middleware with public/protected route split
+  - `app/layout.tsx` — wrapped with ClerkProvider
+  - `app/(auth)/layout.tsx` — full-page centered layout for auth pages
+  - `app/(auth)/sign-in/[[...sign-in]]/page.tsx`
+  - `app/(auth)/sign-up/[[...sign-up]]/page.tsx`
+  - `app/onboarding/page.tsx` — garage creation form
+  - `app/api/onboarding/route.ts` — POST handler for garage creation
+  - `app/dashboard/page.tsx` — dashboard stub with garage name and nav links
+  - `lib/garage-context.ts` — getGarageContext() helper
+  - `lib/validators/onboarding.ts` — Zod schema for onboarding
+  - `prisma/schema.prisma` — Garage model + garageId/branchId on all models
+  - `prisma/migrations/20260517094025_add_auth_and_garage/migration.sql`
+  - `app/api/work-orders/route.ts` — scoped by garageId
+  - `app/api/work-orders/[id]/route.ts` — scoped by garageId
+  - `app/api/customers/route.ts` — scoped by garageId
+  - `app/api/customers/[id]/route.ts` — scoped by garageId
+  - `app/api/vehicles/route.ts` — scoped by garageId
+  - `app/api/vehicles/[id]/route.ts` — scoped by garageId
+  - `app/api/vehicles/search/route.ts` — scoped by garageId
+  - `app/(dashboard)/layout.tsx` — UserButton in nav; async garage check redirects to onboarding; "פלטינה" title links to /dashboard
+  - `__tests__/auth.test.ts` — unit tests for OnboardingSchema and getGarageContext
+  - `.env.example` — documented all required env vars with Clerk v7 names
+  - `docs/features/auth.md` — new feature doc
+- Bugs fixed:
+  - SSO sign-in was not redirecting to onboarding — fixed by server-side garage check in dashboard layout
+  - Clerk v7 redirect env vars renamed from AFTER_SIGN_IN/UP_URL to SIGN_IN_FALLBACK_REDIRECT_URL / SIGN_UP_FORCE_REDIRECT_URL
+- Next step: Add work order detail page (/work-orders/[id]); add phone normalization helper

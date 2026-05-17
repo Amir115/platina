@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getGarageContext } from '@/lib/garage-context';
 import { UpdateCustomerSchema } from '@/lib/validators/customers';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { garageId } = await getGarageContext();
   const { id } = await params;
-  const customer = await prisma.customer.findUnique({
-    where: { id },
+  const customer = await prisma.customer.findFirst({
+    where: { id, garageId },
     include: {
       workOrders: {
         include: { vehicle: true },
@@ -23,6 +25,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { garageId } = await getGarageContext();
     const { id } = await params;
     const body = await request.json();
     const parsed = UpdateCustomerSchema.safeParse(body);
@@ -31,9 +34,14 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
     }
 
+    const existing = await prisma.customer.findFirst({ where: { id, garageId } });
+    if (!existing) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+
     if (parsed.data.phone) {
       const conflict = await prisma.customer.findFirst({
-        where: { phone: parsed.data.phone, NOT: { id } },
+        where: { phone: parsed.data.phone, garageId, NOT: { id } },
       });
       if (conflict) {
         return NextResponse.json(

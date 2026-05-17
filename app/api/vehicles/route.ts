@@ -1,17 +1,20 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getGarageContext } from '@/lib/garage-context';
 import { CreateVehicleSchema } from '@/lib/validators/vehicles';
 
 export async function GET(request: Request) {
+  const { garageId } = await getGarageContext();
   const { searchParams } = new URL(request.url);
   const search = searchParams.get('search');
   const customerId = searchParams.get('customerId');
 
   const vehicles = await prisma.vehicle.findMany({
     where: customerId
-      ? { customerId }
+      ? { garageId, customerId }
       : search
         ? {
+            garageId,
             OR: [
               { licensePlate: { contains: search, mode: 'insensitive' } },
               { make: { contains: search, mode: 'insensitive' } },
@@ -19,7 +22,7 @@ export async function GET(request: Request) {
               { customer: { name: { contains: search, mode: 'insensitive' } } },
             ],
           }
-        : undefined,
+        : { garageId },
     include: {
       customer: true,
       _count: { select: { workOrders: true } },
@@ -32,6 +35,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const { garageId } = await getGarageContext();
     const body = await request.json();
     const parsed = CreateVehicleSchema.safeParse(body);
 
@@ -50,7 +54,7 @@ export async function POST(request: Request) {
     }
 
     const vehicle = await prisma.vehicle.create({
-      data: parsed.data,
+      data: { ...parsed.data, garageId },
       include: { customer: true },
     });
     return NextResponse.json(vehicle, { status: 201 });

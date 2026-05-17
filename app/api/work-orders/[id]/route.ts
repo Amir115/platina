@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getGarageContext } from '@/lib/garage-context';
 import { UpdateWorkOrderSchema } from '@/lib/validators/work-orders';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { garageId } = await getGarageContext();
   const { id } = await params;
-  const workOrder = await prisma.workOrder.findUnique({
-    where: { id },
+  const workOrder = await prisma.workOrder.findFirst({
+    where: { id, garageId },
     include: { customer: true, vehicle: true },
   });
 
@@ -17,12 +19,18 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { garageId } = await getGarageContext();
   const { id } = await params;
   const body = await request.json();
   const parsed = UpdateWorkOrderSchema.safeParse(body);
 
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
+  }
+
+  const existing = await prisma.workOrder.findFirst({ where: { id, garageId } });
+  if (!existing) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
   const completedAt = parsed.data.status === 'DELIVERED' ? new Date() : undefined;
