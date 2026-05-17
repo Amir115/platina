@@ -14,9 +14,9 @@ jobs:
         with:
           script: |
             const body = context.payload.pull_request.body || '';
-            const pattern = /https:\/\/amir-dana-personal\.monday\.com\/boards\/5096146634\/pulses\/\d+/;
+            const pattern = /https:\/\/amird-company\.monday\.com\/boards\/18413512127\/pulses\/\d+/;
             if (!pattern.test(body)) {
               core.setFailed(
-                '❌ PR description must include a Monday.com item link (https://amir-dana-personal.monday.com/boards/...)',
+                '❌ PR description must include a Monday.com item link (https://amird-company.monday.com/boards/...)',
               );
             }

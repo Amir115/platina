@@ -181,7 +181,7 @@ docs/
    ```
    ## Session: YYYY-MM-DD
    - Task: [task name]
-   - Monday item: https://amir-dana-personal.monday.com/boards/5096146634/pulses/[ITEM_ID]
+   - Monday item: https://amird-company.monday.com/boards/18413512127/pulses/[ITEM_ID]
    - PR: [PR URL]
    - Summary: [what was done]
    - Files created or modified: [list]
@@ -217,7 +217,7 @@ gh pr merge <number> --squash --delete-branch
 Every PR must be linked to a Monday.com item. When opening a PR:
 
 1. Include the Monday.com item URL in the PR description — required by CI:
-   `https://amir-dana-personal.monday.com/boards/5096146634/pulses/ITEM_ID`
+   `https://amird-company.monday.com/boards/18413512127/pulses/ITEM_ID`
 2. Immediately after the PR is created, set the item's `PR Link` column (column ID: `link_mm37p2cm`) to the PR URL via the Monday.com MCP tool
 
 The CI job `monday-link-check` enforces rule 1 — PRs without a Monday link will fail checks.
@@ -226,11 +226,11 @@ The CI job `monday-link-check` enforces rule 1 — PRs without a Monday link wil
 
 ## Task Management
 
-This project uses **Monday.com** for task tracking (board ID: `5096146634`).
+This project uses **Monday.com** for task tracking (board ID: `18413512127`).
 
 **At the start of every session:**
 
-1. Use the `monday` MCP tool to fetch open tasks from board `5096146634`
+1. Use the `monday` MCP tool to fetch open tasks from board `18413512127`
 2. Use item status and descriptions to understand what is in progress or planned next
 3. Prioritize work based on items marked as active/in-progress
 
@@ -264,7 +264,7 @@ After any PR is merged during a session, always without being asked:
 
 1. `git checkout main`
 2. `git pull origin main`
-3. Extract the Monday.com item ID from the merged PR description (URL format: `https://amir-dana-personal.monday.com/boards/5096146634/pulses/ITEM_ID`)
+3. Extract the Monday.com item ID from the merged PR description (URL format: `https://amird-company.monday.com/boards/18413512127/pulses/ITEM_ID`)
 4. Update the item's `project_status` column to `Done` via the Monday.com MCP tool
 5. Update the item's `PR Link` column (column ID: `link_mm37p2cm`) with the merged PR URL
 
