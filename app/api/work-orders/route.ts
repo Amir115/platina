@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getGarageContext } from '@/lib/garage-context';
 import { CreateWorkOrderSchema } from '@/lib/validators/work-orders';
 
 export async function GET(request: Request) {
+  const { garageId } = await getGarageContext();
   const { searchParams } = new URL(request.url);
   const status = searchParams.get('status');
   const search = searchParams.get('search');
 
   const workOrders = await prisma.workOrder.findMany({
     where: {
+      garageId,
       ...(status ? { status: status as 'PENDING' | 'IN_PROGRESS' | 'READY' | 'DELIVERED' } : {}),
       ...(search
         ? {
@@ -27,6 +30,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const { garageId } = await getGarageContext();
   const body = await request.json();
   const parsed = CreateWorkOrderSchema.safeParse(body);
 
@@ -36,10 +40,12 @@ export async function POST(request: Request) {
 
   const data = parsed.data;
 
-  let customer = await prisma.customer.findFirst({ where: { phone: data.customerPhone } });
+  let customer = await prisma.customer.findFirst({
+    where: { phone: data.customerPhone, garageId },
+  });
   if (!customer) {
     customer = await prisma.customer.create({
-      data: { name: data.customerName, phone: data.customerPhone },
+      data: { name: data.customerName, phone: data.customerPhone, garageId },
     });
   }
 
@@ -52,11 +58,11 @@ export async function POST(request: Request) {
         model: data.vehicleModel,
         year: data.vehicleYear,
         customerId: customer.id,
+        garageId,
         ...(data.mileage !== undefined ? { mileage: data.mileage } : {}),
       },
     });
   } else {
-    // Backfill customer link and update mileage if provided
     const updates: { customerId?: string; mileage?: number } = {};
     if (!vehicle.customerId) updates.customerId = customer.id;
     if (data.mileage !== undefined) updates.mileage = data.mileage;
@@ -69,6 +75,7 @@ export async function POST(request: Request) {
     data: {
       customerId: customer.id,
       vehicleId: vehicle.id,
+      garageId,
       description: data.description,
       estimatedCost: data.estimatedCost,
       status: 'PENDING',

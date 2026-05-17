@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { UserButton } from '@clerk/nextjs';
 import { NavSearch } from '@/components/NavSearch';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +31,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex-1 flex justify-start">
             <NavSearch />
           </div>
+          <UserButton />
         </div>
       </nav>
       {children}

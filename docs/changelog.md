@@ -565,3 +565,39 @@
 - Add phone-format display normalization helper
 - Work order detail page (`/work-orders/[id]`) — currently no dedicated page
 - Mileage history per work order (currently only stores latest value on vehicle)
+
+---
+
+## Session: 2026-05-17
+
+- Task: Add authentication and garage multi-tenancy
+- Monday item: https://amird-company.monday.com/boards/18413512127/pulses/12030634149
+- PR: (pending)
+- Summary: Integrated Clerk auth with ClerkProvider, middleware, sign-in/sign-up pages, onboarding flow, and garage-scoped multi-tenancy. Added Garage model with row-level isolation via garageId on all existing models. All API routes now scope queries by garageId via getGarageContext(). Dashboard stub at /dashboard shows garage name and UserButton.
+- Files created or modified:
+  - `middleware.ts` — Clerk middleware with public/protected route split
+  - `app/layout.tsx` — wrapped with ClerkProvider
+  - `app/(auth)/layout.tsx` — full-page centered layout for auth pages
+  - `app/(auth)/sign-in/[[...sign-in]]/page.tsx`
+  - `app/(auth)/sign-up/[[...sign-up]]/page.tsx`
+  - `app/onboarding/page.tsx` — garage creation form
+  - `app/api/onboarding/route.ts` — POST handler for garage creation
+  - `app/dashboard/page.tsx` — dashboard stub with garage name and nav links
+  - `lib/garage-context.ts` — getGarageContext() helper
+  - `lib/validators/onboarding.ts` — Zod schema for onboarding
+  - `prisma/schema.prisma` — Garage model + garageId/branchId on all models
+  - `prisma/migrations/20260517094025_add_auth_and_garage/migration.sql`
+  - `app/api/work-orders/route.ts` — scoped by garageId
+  - `app/api/work-orders/[id]/route.ts` — scoped by garageId
+  - `app/api/customers/route.ts` — scoped by garageId
+  - `app/api/customers/[id]/route.ts` — scoped by garageId
+  - `app/api/vehicles/route.ts` — scoped by garageId
+  - `app/api/vehicles/[id]/route.ts` — scoped by garageId
+  - `app/api/vehicles/search/route.ts` — scoped by garageId
+  - `app/(dashboard)/layout.tsx` — added UserButton to nav
+  - `__tests__/auth.test.ts` — unit tests for OnboardingSchema and getGarageContext
+  - `.env.local` — added Clerk env vars (empty values)
+  - `.env.example` — documented all required env vars
+  - `docs/features/auth.md` — new feature doc
+- Bugs fixed: none
+- Next step: Fill in Clerk API keys in .env.local after creating app at clerk.com; add work order detail page (/work-orders/[id]); add phone normalization helper
