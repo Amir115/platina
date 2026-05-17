@@ -30,12 +30,44 @@
 
 ---
 
+## Session 015 — Monday.com Account Migration
+
+**Date:** 2026-05-17
+**Type:** Infrastructure
+**PR:** https://github.com/Amir115/platina/pull/16
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030600625
+
+### What was done
+
+- Migrated all Monday.com references from `amir-dana-personal.monday.com` board `5096146634` to `amird-company.monday.com` board `18413512127`
+- Updated `.mcp.json` with new API token for the `amird-company` account
+- Updated all 13 existing PR descriptions (#1–#13, #15) with new Monday item URLs
+- Updated CI workflow (`monday-link-check.yml`) to validate new domain/board pattern
+
+### Files created / modified
+
+- `CLAUDE.md`
+- `.mcp.json`
+- `.github/workflows/monday-link-check.yml`
+- `docs/changelog.md`
+- `docs/features/vehicles.md`
+
+### Bugs fixed
+
+- None
+
+### Next step
+
+- Verify Monday.com MCP connection works with new token on board `18413512127`
+
+---
+
 ## Session 002 — Infrastructure Setup + First MVP
 
 **Date:** 2026-05-09
 **Type:** Infrastructure + Feature
 **PR:** https://github.com/Amir115/platina/pull/1
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904839174
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030703860
 
 ### What was done
 
@@ -96,7 +128,7 @@
 **Date:** 2026-05-09
 **Type:** Infrastructure
 **PR:** https://github.com/Amir115/platina/pull/2
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904828168
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030634227
 
 ### What was done
 
@@ -124,7 +156,7 @@
 **Date:** 2026-05-09
 **Type:** Infrastructure
 **PR:** https://github.com/Amir115/platina/pull/3
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904839145
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030634144
 
 ### What was done
 
@@ -160,7 +192,7 @@
 **Date:** 2026-05-09
 **Type:** Documentation
 **PR:** https://github.com/Amir115/platina/pull/4
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904827955
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030634307
 
 ### What was done
 
@@ -182,7 +214,7 @@
 **Date:** 2026-05-09
 **Type:** Infrastructure
 **PR:** https://github.com/Amir115/platina/pull/5
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904852503
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030703936
 
 ### What was done
 
@@ -210,7 +242,7 @@
 **Date:** 2026-05-09
 **Type:** Documentation / Infrastructure
 **PR:** https://github.com/Amir115/platina/pull/6
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904818270
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030634228
 
 ### What was done
 
@@ -242,7 +274,7 @@
 **Date:** 2026-05-09
 **Type:** Documentation / Process
 **PR:** https://github.com/Amir115/platina/pull/7
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2905044601
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030634241
 
 ### What was done
 
@@ -268,7 +300,7 @@
 **Date:** 2026-05-09
 **Type:** Documentation
 **PR:** https://github.com/Amir115/platina/pull/8
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904822546
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030634238
 
 ### What was done
 
@@ -294,7 +326,7 @@
 **Date:** 2026-05-09
 **Type:** Process / Infrastructure
 **PR:** https://github.com/Amir115/platina/pull/9
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904822601
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030703937
 
 ### What was done
 
@@ -321,13 +353,13 @@
 **Date:** 2026-05-09
 **Type:** Infrastructure
 **PR:** https://github.com/Amir115/platina/pull/10
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904852676
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030600614
 
 ### What was done
 
 - Configured the Monday.com MCP server in `.claude/settings.json` (enabled under `mcpServers`)
 - Added `.mcp.json` to `.gitignore` to prevent API keys from being committed
-- Added `CLAUDE.md` rules for task management: fetch open tasks from board `5096146634` at session start, prioritize by active/in-progress status
+- Added `CLAUDE.md` rules for task management: fetch open tasks from board `18413512127` at session start, prioritize by active/in-progress status
 
 ### Files created / modified
 
@@ -350,7 +382,7 @@
 **Date:** 2026-05-10
 **Type:** Process / Documentation
 **PR:** https://github.com/Amir115/platina/pull/11
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2904955762
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030634258
 
 ### What was done
 
@@ -376,7 +408,7 @@
 **Date:** 2026-05-10
 **Type:** Feature
 **PR:** https://github.com/Amir115/platina/pull/12
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2903956202
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030600626
 
 ### What was done
 
@@ -455,7 +487,7 @@
 **Date:** 2026-05-11
 **Type:** Feature
 **PR:** https://github.com/Amir115/platina/pull/15
-**Monday item:** https://amir-dana-personal.monday.com/boards/5096146634/pulses/2903849994
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030634295
 
 ### What was done
 
