@@ -34,8 +34,8 @@
 
 **Date:** 2026-05-17
 **Type:** Infrastructure
-**PR:** TBD
-**Monday item:** TBD
+**PR:** https://github.com/Amir115/platina/pull/16
+**Monday item:** https://amird-company.monday.com/boards/18413512127/pulses/12030600625
 
 ### What was done
 
