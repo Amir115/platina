@@ -1,8 +1,19 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 import { NavSearch } from '@/components/NavSearch';
+import { getGarageContext } from '@/lib/garage-context';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  try {
+    await getGarageContext();
+  } catch (e) {
+    if (e instanceof Error && e.message.includes('Garage not found')) {
+      redirect('/onboarding');
+    }
+    throw e;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-20" dir="rtl">
