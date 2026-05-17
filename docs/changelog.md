@@ -572,7 +572,7 @@
 
 - Task: Add authentication and garage multi-tenancy
 - Monday item: https://amird-company.monday.com/boards/18413512127/pulses/12030634149
-- PR: (pending)
+- PR: https://github.com/Amir115/platina/pull/17
 - Summary: Integrated Clerk auth with ClerkProvider, middleware, sign-in/sign-up pages, onboarding flow, and garage-scoped multi-tenancy. Added Garage model with row-level isolation via garageId on all existing models. All API routes now scope queries by garageId via getGarageContext(). Dashboard stub at /dashboard shows garage name and UserButton.
 - Files created or modified:
   - `middleware.ts` — Clerk middleware with public/protected route split
