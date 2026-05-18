@@ -218,9 +218,18 @@ Every PR must be linked to a Monday.com item. When opening a PR:
 
 1. Include the Monday.com item URL in the PR description — required by CI:
    `https://amird-company.monday.com/boards/18413512127/pulses/ITEM_ID`
-2. Immediately after the PR is created, set the item's `PR Link` column (column ID: `link_mm37p2cm`) to the PR URL via the Monday.com MCP tool
+2. Immediately after the PR is created, set the item's `PR Link` column (column ID: `link_mm3dqdk7`) to the PR URL via the Monday.com MCP tool, using the text format `PR #NUMBER - PR_TITLE` (e.g. `PR #17 - feat(auth): add Clerk authentication and garage multi-tenancy`)
+
+**Choosing the right Monday item:**
+
+- Only link to an item whose scope matches the PR's actual work
+- Do NOT reuse the item from a previous PR in the same session unless the work is a direct continuation
+- If no existing item fits, create a new one in the Execution group and ask the user to confirm if unsure
 
 The CI job `monday-link-check` enforces rule 1 — PRs without a Monday link will fail checks.
+
+**Keeping the PR up to date:**
+Every time new commits are pushed to a PR branch, immediately update the PR title and body to reflect all cumulative changes on the branch — not just the latest commit. The description must always be an accurate summary of everything the PR contains.
 
 ---
 
@@ -266,6 +275,6 @@ After any PR is merged during a session, always without being asked:
 2. `git pull origin main`
 3. Extract the Monday.com item ID from the merged PR description (URL format: `https://amird-company.monday.com/boards/18413512127/pulses/ITEM_ID`)
 4. Update the item's `project_status` column to `Done` via the Monday.com MCP tool
-5. Update the item's `PR Link` column (column ID: `link_mm37p2cm`) with the merged PR URL
+5. Update the item's `PR Link` column (column ID: `link_mm3dqdk7`) with the merged PR URL, using the text format `PR #NUMBER - PR_TITLE`
 
 This keeps the local `main` branch current and the Monday board in sync after every merge.
