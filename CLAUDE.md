@@ -227,6 +227,9 @@ Every PR must be linked to a Monday.com item. When opening a PR:
 
 The CI job `monday-link-check` enforces rule 1 — PRs without a Monday link will fail checks.
 
+**Keeping the PR up to date:**
+Every time new commits are pushed to a PR branch, immediately update the PR title and body to reflect all cumulative changes on the branch — not just the latest commit. The description must always be an accurate summary of everything the PR contains.
+
 ---
 
 ## Task Management
