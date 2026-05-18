@@ -221,6 +221,7 @@ Every PR must be linked to a Monday.com item. When opening a PR:
 2. Immediately after the PR is created, set the item's `PR Link` column (column ID: `link_mm3dqdk7`) to the PR URL via the Monday.com MCP tool, using the text format `PR #NUMBER - PR_TITLE` (e.g. `PR #17 - feat(auth): add Clerk authentication and garage multi-tenancy`)
 
 **Choosing the right Monday item:**
+
 - Only link to an item whose scope matches the PR's actual work
 - Do NOT reuse the item from a previous PR in the same session unless the work is a direct continuation
 - If no existing item fits, create a new one in the Execution group and ask the user to confirm if unsure
