@@ -4,6 +4,7 @@ import type { Vehicle, Customer } from '@prisma/client';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import type { MotVehicleData } from '@/lib/mot-api';
 
 interface VehicleModalProps {
   open: boolean;
@@ -49,6 +50,10 @@ export function VehicleModal({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [plateChecking, setPlateChecking] = useState(false);
+  const [motLoading, setMotLoading] = useState(false);
+  const [motError, setMotError] = useState<string | null>(null);
+  const [motData, setMotData] = useState<MotVehicleData | null>(null);
+  const [autofilled, setAutofilled] = useState<Set<string>>(new Set());
   const [customerSuggestions, setCustomerSuggestions] = useState<Customer[]>([]);
   const [showCustomerSuggestions, setShowCustomerSuggestions] = useState(false);
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -56,6 +61,50 @@ export function VehicleModal({
   function set(key: keyof FormState, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
     setErrors((e) => ({ ...e, [key]: undefined }));
+  }
+
+  async function fetchMot() {
+    const plate = form.licensePlate.trim();
+    if (!plate) return;
+    setMotLoading(true);
+    setMotError(null);
+    setMotData(null);
+    setAutofilled(new Set());
+    try {
+      const res = await fetch(`/api/vehicles/lookup?plate=${encodeURIComponent(plate)}`);
+      if (res.status === 404) {
+        setMotError('רכב לא נמצא במרשם');
+        return;
+      }
+      if (!res.ok) {
+        setMotError('שגיאה בשליפת נתוני רכב');
+        return;
+      }
+      const data: MotVehicleData = await res.json();
+      setMotData(data);
+      const filled = new Set<string>();
+      if (data.make) {
+        setForm((f) => ({ ...f, make: data.make! }));
+        filled.add('make');
+      }
+      if (data.model) {
+        setForm((f) => ({ ...f, model: data.model! }));
+        filled.add('model');
+      }
+      if (data.year) {
+        setForm((f) => ({ ...f, year: String(data.year) }));
+        filled.add('year');
+      }
+      if (data.color) {
+        setForm((f) => ({ ...f, color: data.color! }));
+        filled.add('color');
+      }
+      setAutofilled(filled);
+    } catch {
+      setMotError('שגיאה בשליפת נתוני רכב');
+    } finally {
+      setMotLoading(false);
+    }
   }
 
   async function checkPlateUniqueness() {
@@ -153,33 +202,99 @@ export function VehicleModal({
   return (
     <Modal open={open} onClose={onClose} title={vehicle ? 'עריכת רכב' : 'רכב חדש'}>
       <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4">
-        <Input
-          label="לוחית רישוי"
-          value={form.licensePlate}
-          onChange={(e) => set('licensePlate', e.target.value)}
-          onBlur={checkPlateUniqueness}
-          error={plateChecking ? 'בודק...' : errors.licensePlate}
-          placeholder="123-45-678"
-          disabled={!!vehicle}
-          required
-        />
+        <div className="flex flex-col gap-1">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            לוחית רישוי
+          </label>
+          <div className="flex gap-2">
+            <input
+              className={`flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.licensePlate ? 'border-red-400' : 'border-gray-300 dark:border-gray-600'
+              } dark:bg-gray-800 dark:text-gray-100`}
+              value={form.licensePlate}
+              onChange={(e) => {
+                set('licensePlate', e.target.value);
+                setMotData(null);
+                setMotError(null);
+                setAutofilled(new Set());
+              }}
+              onBlur={checkPlateUniqueness}
+              placeholder="123-45-678"
+              disabled={!!vehicle}
+              required
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={fetchMot}
+              disabled={motLoading || !form.licensePlate.trim()}
+            >
+              {motLoading ? 'טוען...' : 'שלוף מרשם'}
+            </Button>
+          </div>
+          {(plateChecking ? 'בודק...' : errors.licensePlate) && (
+            <p className="text-xs text-red-600">
+              {plateChecking ? 'בודק...' : errors.licensePlate}
+            </p>
+          )}
+          {motError && <p className="text-xs text-red-600">{motError}</p>}
+        </div>
+
+        {motData && (
+          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg px-3 py-2 text-xs text-blue-800 dark:text-blue-300 space-y-0.5">
+            {motData.fuelType && <div>סוג דלק: {motData.fuelType}</div>}
+            {motData.testExpiry && <div>תוקף טסט: {motData.testExpiry}</div>}
+            {motData.vin && <div>מספר שלדה: {motData.vin}</div>}
+            {motData.engineModel && (
+              <div>
+                מנוע: {motData.engineModel}
+                {motData.engineSize ? ` (${motData.engineSize} סמ"ק)` : ''}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3">
           <Input
             label="יצרן"
             value={form.make}
-            onChange={(e) => set('make', e.target.value)}
+            onChange={(e) => {
+              set('make', e.target.value);
+              setAutofilled((s) => {
+                const n = new Set(s);
+                n.delete('make');
+                return n;
+              });
+            }}
             error={errors.make}
             placeholder="Toyota"
             required
+            className={
+              autofilled.has('make')
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700'
+                : ''
+            }
           />
           <Input
             label="דגם"
             value={form.model}
-            onChange={(e) => set('model', e.target.value)}
+            onChange={(e) => {
+              set('model', e.target.value);
+              setAutofilled((s) => {
+                const n = new Set(s);
+                n.delete('model');
+                return n;
+              });
+            }}
             error={errors.model}
             placeholder="Corolla"
             required
+            className={
+              autofilled.has('model')
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700'
+                : ''
+            }
           />
         </div>
 
@@ -188,11 +303,23 @@ export function VehicleModal({
             label="שנה"
             type="number"
             value={form.year}
-            onChange={(e) => set('year', e.target.value)}
+            onChange={(e) => {
+              set('year', e.target.value);
+              setAutofilled((s) => {
+                const n = new Set(s);
+                n.delete('year');
+                return n;
+              });
+            }}
             error={errors.year}
             min={1980}
             max={new Date().getFullYear() + 1}
             required
+            className={
+              autofilled.has('year')
+                ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700'
+                : ''
+            }
           />
           <Input
             label='ק"מ (אופציונלי)'
@@ -207,8 +334,20 @@ export function VehicleModal({
         <Input
           label="צבע (אופציונלי)"
           value={form.color}
-          onChange={(e) => set('color', e.target.value)}
+          onChange={(e) => {
+            set('color', e.target.value);
+            setAutofilled((s) => {
+              const n = new Set(s);
+              n.delete('color');
+              return n;
+            });
+          }}
           error={errors.color}
+          className={
+            autofilled.has('color')
+              ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700'
+              : ''
+          }
         />
 
         <div className="relative flex flex-col gap-1">
