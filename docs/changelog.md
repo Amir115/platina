@@ -568,6 +568,38 @@
 
 ---
 
+## Session: 2026-06-02 (2)
+
+- Task: /review skill + MOT API service docs
+- Monday item: https://amird-company.monday.com/boards/18413512127/pulses/12173846805
+- PR: https://github.com/Amir115/platina/pull/20
+- Summary: Created the /review skill with severity-grouped output format and a standalone REVIEW_STANDARDS.md covering global TypeScript/security/async/test rules and Platina-specific RTL, dark mode, Zod, Prisma, and auth rules. Added missing docs/services/mot-api.md for the MOT API service introduced in PR #19 (field mapping, caching, error handling, usage example).
+- Files created or modified:
+  - `.claude/skills/review/REVIEW_STANDARDS.md` — single source of truth for review rules
+  - `.claude/skills/review/skill.md` — /review skill definition
+  - `docs/services/mot-api.md` — MOT API service documentation
+  - `docs/changelog.md` — this entry
+- Bugs fixed: none
+- Next step: Work order detail page (/work-orders/[id]); phone normalization helper
+
+---
+
+## Session: 2026-06-02
+
+- Task: MOT API Integration — Vehicle Lookup by License Plate
+- Monday item: https://amird-company.monday.com/boards/18413512127/pulses/12172611594
+- PR: https://github.com/Amir115/platina/pull/19
+- Summary: Integrated the Israeli Ministry of Transportation open API (data.gov.il) to look up vehicle data by license plate. Added a lib/mot-api service with Zod validation, 24h in-memory cache, and 5s timeout. Added GET /api/vehicles/lookup route. Updated VehicleModal with a "שלוף מרשם" button that autofills make/model/year/color and displays a read-only MOT info panel (fuel type, test expiry, VIN, engine).
+- Files created or modified:
+  - `lib/mot-api/types.ts` — MotVehicleRawSchema, MotApiResponseSchema, MotVehicleData type
+  - `lib/mot-api/client.ts` — fetchVehicleByPlate with cache + timeout
+  - `lib/mot-api/index.ts` — re-exports
+  - `app/api/vehicles/lookup/route.ts` — GET /api/vehicles/lookup?plate=
+  - `components/VehicleModal.tsx` — "שלוף מרשם" button, autofill, MOT info panel
+  - `__tests__/mot-api-client.test.ts` — 7 tests (valid plate, unknown plate, cache hit, timeout, invalid shape, whitespace trim, nullable fields)
+- Bugs fixed: none
+- Next step: Work order detail page (/work-orders/[id]); phone normalization helper
+
 ## Session: 2026-05-17
 
 - Task: Add authentication and garage multi-tenancy
