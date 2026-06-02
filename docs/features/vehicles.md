@@ -81,6 +81,7 @@ Israeli plate regex: `/^\d{2,3}-\d{2,3}-\d{2,3}$/` covers old format (12-345-67)
 - Create / edit (pre-filled) in one component
 - License plate uniqueness check on blur (disabled in edit mode)
 - Customer searchable dropdown (same debounce pattern as CustomerModal)
+- **"שלוף מרשם" button** — fetches data from MOT API by plate; autofills make/model/year/color with a blue highlight; shows a read-only info panel with fuel type, test expiry, VIN, and engine details; error "רכב לא נמצא במרשם" if plate unknown
 
 ---
 
@@ -98,6 +99,9 @@ Israeli plate regex: `/^\d{2,3}-\d{2,3}-\d{2,3}$/` covers old format (12-345-67)
 
 `__tests__/vehicles.test.ts` — 15 unit tests covering CreateVehicleSchema and UpdateVehicleSchema:
 plate formats, year range, negative mileage, optional fields, missing required fields.
+
+`__tests__/mot-api-client.test.ts` — 7 unit tests for fetchVehicleByPlate:
+valid plate normalization, unknown plate → null, cache hit (single fetch), timeout error, invalid response shape, whitespace trimming, nullable fields.
 
 ---
 
