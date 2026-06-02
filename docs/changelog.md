@@ -572,7 +572,7 @@
 
 - Task: /review skill + MOT API service docs
 - Monday item: https://amird-company.monday.com/boards/18413512127/pulses/12173846805
-- PR: (pending)
+- PR: https://github.com/Amir115/platina/pull/20
 - Summary: Created the /review skill with severity-grouped output format and a standalone REVIEW_STANDARDS.md covering global TypeScript/security/async/test rules and Platina-specific RTL, dark mode, Zod, Prisma, and auth rules. Added missing docs/services/mot-api.md for the MOT API service introduced in PR #19 (field mapping, caching, error handling, usage example).
 - Files created or modified:
   - `.claude/skills/review/REVIEW_STANDARDS.md` — single source of truth for review rules
