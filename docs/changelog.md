@@ -9,7 +9,7 @@
 
 - Task: CI Code Review — automated PR review via GitHub Actions
 - Monday item: https://amird-company.monday.com/boards/18413512127/pulses/12173846464
-- PR: (pending)
+- PR: https://github.com/Amir115/platina/pull/21
 - Summary: Added `claude-review.yml` GitHub Actions workflow that uses `anthropics/claude-code-action@v1` to run Claude Code as an automated reviewer on every PR push. Posts inline comments and a summary, approves on clean pass, and fails the CI check when blocking issues exist. Added `scripts/setup-ci-review.sh` for setup verification and `docs/ci-review-setup.md` for full setup documentation.
 - Files created or modified:
   - `.github/workflows/claude-review.yml` — new CI review workflow
