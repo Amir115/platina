@@ -1,0 +1,156 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  id-token: write
+
+jobs:
+  claude-review:
+    name: Claude Code Review
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code Review
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.CLAUDE_REVIEW_TOKEN || secrets.GITHUB_TOKEN }}
+          allowed_tools: 'Bash,Read'
+          direct_prompt: |
+            You are the automated code reviewer for the Platina project. Review this PR and post your findings as GitHub review comments.
+
+            ## Context
+            - Repository: ${{ github.repository }}
+            - PR number: ${{ github.event.pull_request.number }}
+            - Head commit: ${{ github.event.pull_request.head.sha }}
+
+            ## Step 1 — Read the review standards
+            Read `.claude/skills/review/REVIEW_STANDARDS.md`. This is the single source of truth for every review rule. Apply every rule to this PR.
+
+            ## Step 2 — Dismiss any previous Claude review on this PR
+            Check for an existing review from this bot and dismiss it so the new review is the authoritative one:
+            ```bash
+            PREVIOUS_ID=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
+              --jq '[.[] | select(.user.login == "github-actions[bot]")] | last | .id // empty')
+            if [ -n "$PREVIOUS_ID" ]; then
+              gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews/$PREVIOUS_ID/dismissals \
+                --method PUT \
+                --field message="Superseded by review on re-push." 2>/dev/null || true
+            fi
+            ```
+
+            ## Step 3 — Get the PR diff
+            ```bash
+            gh pr diff ${{ github.event.pull_request.number }}
+            ```
+            Focus on lines starting with `+` (added lines). Note the file path and line number in the new file for each issue.
+
+            ## Step 4 — Analyze and classify findings
+            For each changed file and each changed line, check against every rule in REVIEW_STANDARDS.md. Classify each finding:
+            - **BLOCKING**: Must be fixed before merge (e.g., hardcoded secrets, missing Zod validation on API routes, silent catch blocks, `any` type, N+1 queries, missing `dark:` Tailwind variant, unauthenticated API routes).
+            - **WARNING**: Should be fixed but does not block merge (e.g., missing test coverage, minor style issues).
+
+            ## Step 5 — Post a GitHub review with inline comments
+            Build the review JSON and post it in a single API call. Use the line numbers from the diff (line numbers in the new file). Only comment on lines that appear in the diff (lines prefixed with `+`).
+
+            If a finding cannot be attached to a specific line, include it in the top-level review `body` instead.
+
+            ```bash
+            # Build the review JSON and post it
+            COMMIT_SHA="${{ github.event.pull_request.head.sha }}"
+            REVIEW_EVENT="COMMENT"  # Use APPROVE or REQUEST_CHANGES in Step 6
+
+            # Example of building and posting the review:
+            gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews \
+              --method POST \
+              --input - <<'REVIEW_EOF'
+            {
+              "commit_id": "COMMIT_SHA",
+              "event": "COMMENT",
+              "body": "Top-level summary goes here",
+              "comments": [
+                {
+                  "path": "path/to/file.ts",
+                  "line": 42,
+                  "side": "RIGHT",
+                  "body": "🔴 BLOCKING: [Rule violated] — explanation"
+                }
+              ]
+            }
+            REVIEW_EOF
+            ```
+
+            Each inline comment body format:
+            - BLOCKING: `🔴 BLOCKING: [Rule from REVIEW_STANDARDS.md] — brief explanation of what to fix`
+            - WARNING: `🟡 WARNING: [Rule from REVIEW_STANDARDS.md] — brief explanation`
+
+            ## Step 6 — Post a top-level summary comment
+            Post a summary comment (separate from the review) with this exact format:
+
+            ```
+            ## Claude Code Review — [APPROVED ✅ | BLOCKED 🔴]
+
+            | Severity | Count |
+            |----------|-------|
+            | 🔴 Blocking | N |
+            | 🟡 Warning | N |
+
+            ### Blocking Issues
+            - [one line per issue, or "None"]
+
+            ### Warnings
+            - [one line per issue, or "None"]
+
+            ---
+            *Reviewed commit `SHORT_SHA` — [timestamp]*
+            ```
+
+            Post it:
+            ```bash
+            gh pr comment ${{ github.event.pull_request.number }} --body "..."
+            ```
+
+            ## Step 7 — Approve or request changes
+            **If BLOCKING count is 0:**
+            ```bash
+            gh pr review ${{ github.event.pull_request.number }} \
+              --approve \
+              --body "No blocking issues found. Approved by Claude Code Review."
+            echo "0" > /tmp/blocking_count.txt
+            ```
+
+            **If BLOCKING count > 0:**
+            ```bash
+            gh pr review ${{ github.event.pull_request.number }} \
+              --request-changes \
+              --body "$(( BLOCKING_COUNT )) blocking issue(s) found — see inline comments above."
+            echo "$(( BLOCKING_COUNT ))" > /tmp/blocking_count.txt
+            ```
+
+            Always write a number to `/tmp/blocking_count.txt` at the end — this is how the CI check determines pass/fail.
+
+      - name: Fail if blocking issues exist
+        if: always()
+        run: |
+          count=$(cat /tmp/blocking_count.txt 2>/dev/null || echo "")
+          if [ -z "$count" ]; then
+            echo "⚠️  Could not determine review result (blocking_count.txt missing). Treating as pass."
+            exit 0
+          fi
+          if [ "$count" -gt "0" ]; then
+            echo "❌ Claude Code Review found $count blocking issue(s). Fix them before merging."
+            exit 1
+          fi
+          echo "✅ No blocking issues. Claude Code Review passed."
